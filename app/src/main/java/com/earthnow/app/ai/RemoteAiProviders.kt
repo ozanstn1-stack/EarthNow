@@ -51,7 +51,8 @@ class OpenAiProvider @Inject constructor(
 
 @Singleton
 class DeepSeekProvider @Inject constructor(
-    @javax.inject.Named("deepseek") private val api: OpenAiApi
+    @javax.inject.Named("deepseek") private val api: OpenAiApi,
+    private val keyStore: AiKeyStore
 ) : AiSummaryProvider {
     override val id = "deepseek"
     override val displayName = "DeepSeek"
@@ -72,7 +73,9 @@ class DeepSeekProvider @Inject constructor(
         chat(AiPromptBuilder.questionSystemPrompt(language), AiPromptBuilder.questionPayload(question, dataContext))
 
     private suspend fun chat(system: String, user: String): String {
-        if (com.earthnow.app.BuildConfig.AI_DEEPSEEK_API_KEY.isBlank()) {
+        if (com.earthnow.app.BuildConfig.AI_DEEPSEEK_API_KEY.isBlank() &&
+            keyStore.effectiveKey("deepseek").isBlank()
+        ) {
             throw IllegalStateException("DeepSeek API key not configured")
         }
         val resp = api.chat(
@@ -91,13 +94,14 @@ class DeepSeekProvider @Inject constructor(
 
 @Singleton
 class GeminiProvider @Inject constructor(
-    private val api: GeminiApi
+    private val api: GeminiApi,
+    private val keyStore: AiKeyStore
 ) : AiSummaryProvider {
     override val id = "gemini"
     override val displayName = "Google Gemini"
 
     private val model = System.getenv("AI_GEMINI_MODEL") ?: "gemini-2.0-flash"
-    private val apiKey: String get() = com.earthnow.app.BuildConfig.AI_GEMINI_API_KEY
+    private val buildKey: String get() = com.earthnow.app.BuildConfig.AI_GEMINI_API_KEY
 
     override suspend fun summarize(
         context: LocationContext,
@@ -113,6 +117,7 @@ class GeminiProvider @Inject constructor(
         generate(AiPromptBuilder.questionSystemPrompt(language), AiPromptBuilder.questionPayload(question, dataContext))
 
     private suspend fun generate(system: String, user: String): String {
+        val apiKey = keyStore.effectiveKey("gemini").ifBlank { buildKey }
         if (apiKey.isBlank()) throw IllegalStateException("Gemini API key not configured")
         val resp = api.generate(
             model = model,

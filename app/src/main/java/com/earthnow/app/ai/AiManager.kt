@@ -20,6 +20,7 @@ class AiManager @Inject constructor(
     private val geminiProvider: GeminiProvider,
     private val templateProvider: TemplateSummaryProvider,
     private val settingsRepository: SettingsRepository,
+    private val keyStore: AiKeyStore,
     @dagger.hilt.android.qualifiers.ApplicationContext private val appContext: android.content.Context
 ) {
     data class AiResult(val text: String, val provider: String, val usedFallback: Boolean)
@@ -81,15 +82,15 @@ class AiManager @Inject constructor(
         }
     }
 
-    fun availableProviders(): List<Pair<String, String>> {
+    suspend fun availableProviders(): List<Pair<String, String>> {
         val list = mutableListOf<Pair<String, String>>()
-        if (BuildConfig.AI_DEEPSEEK_API_KEY.isNotBlank()) {
+        if (keyStore.effectiveKey("deepseek").isNotBlank()) {
             list += deepSeekProvider.id to deepSeekProvider.displayName
         }
-        if (BuildConfig.AI_OPENAI_API_KEY.isNotBlank() || BuildConfig.AI_BASE_URL.isNotBlank()) {
+        if (keyStore.effectiveKey("openai").isNotBlank()) {
             list += openAiProvider.id to openAiProvider.displayName
         }
-        if (BuildConfig.AI_GEMINI_API_KEY.isNotBlank()) {
+        if (keyStore.effectiveKey("gemini").isNotBlank()) {
             list += geminiProvider.id to geminiProvider.displayName
         }
         list += templateProvider.id to templateProvider.displayName
@@ -97,17 +98,17 @@ class AiManager @Inject constructor(
     }
 
     private suspend fun pickProvider(pref: String): String = when (pref) {
-        "openai" -> if (BuildConfig.AI_OPENAI_API_KEY.isNotBlank()) "openai" else "template"
-        "gemini" -> if (BuildConfig.AI_GEMINI_API_KEY.isNotBlank()) "gemini" else "template"
-        "deepseek" -> if (BuildConfig.AI_DEEPSEEK_API_KEY.isNotBlank()) "deepseek" else "template"
+        "openai" -> if (keyStore.effectiveKey("openai").isNotBlank()) "openai" else "template"
+        "gemini" -> if (keyStore.effectiveKey("gemini").isNotBlank()) "gemini" else "template"
+        "deepseek" -> if (keyStore.effectiveKey("deepseek").isNotBlank()) "deepseek" else "template"
         "template" -> "template"
         else -> {
             // Auto: prefer the cheapest configured provider, fall back to
             // the local template so the feature never fails silently.
             when {
-                BuildConfig.AI_DEEPSEEK_API_KEY.isNotBlank() -> "deepseek"
-                BuildConfig.AI_OPENAI_API_KEY.isNotBlank() -> "openai"
-                BuildConfig.AI_GEMINI_API_KEY.isNotBlank() -> "gemini"
+                keyStore.effectiveKey("deepseek").isNotBlank() -> "deepseek"
+                keyStore.effectiveKey("openai").isNotBlank() -> "openai"
+                keyStore.effectiveKey("gemini").isNotBlank() -> "gemini"
                 else -> "template"
             }
         }

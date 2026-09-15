@@ -18,15 +18,72 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
-    private val localDataRepository: LocalDataRepository
+    private val localDataRepository: LocalDataRepository,
+    private val keyStore: com.earthnow.app.ai.AiKeyStore
 ) : ViewModel() {
+
+    data class AiKeyState(
+        val deepseek: String = "",
+        val openai: String = "",
+        val gemini: String = "",
+        val baseUrl: String = ""
+    ) {
+        fun masked(provider: String): String = when (provider) {
+            "deepseek" -> mask(deepseek)
+            "openai" -> mask(openai)
+            else -> mask(gemini)
+        }
+
+        private fun mask(value: String): String =
+            if (value.isBlank()) "" else "••••" + value.takeLast(4)
+    }
 
     private val _settings = MutableStateFlow<UserSettings?>(null)
     val settings: StateFlow<UserSettings?> = _settings.asStateFlow()
 
+    private val _aiKeys = MutableStateFlow(AiKeyState())
+    val aiKeys: StateFlow<AiKeyState> = _aiKeys.asStateFlow()
+
     init {
         viewModelScope.launch {
             _settings.value = settingsRepository.settings.first()
+        }
+        viewModelScope.launch {
+            _aiKeys.value = AiKeyState(
+                deepseek = keyStore.effectiveKey("deepseek"),
+                openai = keyStore.effectiveKey("openai"),
+                gemini = keyStore.effectiveKey("gemini"),
+                baseUrl = keyStore.runtimeBaseUrl()
+            )
+        }
+    }
+
+    fun saveAiKey(provider: String, value: String) {
+        viewModelScope.launch {
+            keyStore.setKey(provider, value)
+            _aiKeys.value = _aiKeys.value.copy(
+                deepseek = keyStore.effectiveKey("deepseek"),
+                openai = keyStore.effectiveKey("openai"),
+                gemini = keyStore.effectiveKey("gemini")
+            )
+        }
+    }
+
+    fun clearAiKey(provider: String) {
+        viewModelScope.launch {
+            keyStore.setKey(provider, "")
+            _aiKeys.value = _aiKeys.value.copy(
+                deepseek = keyStore.effectiveKey("deepseek"),
+                openai = keyStore.effectiveKey("openai"),
+                gemini = keyStore.effectiveKey("gemini")
+            )
+        }
+    }
+
+    fun saveBaseUrl(url: String) {
+        viewModelScope.launch {
+            keyStore.setBaseUrl(url)
+            _aiKeys.value = _aiKeys.value.copy(baseUrl = keyStore.runtimeBaseUrl())
         }
     }
 

@@ -124,7 +124,7 @@ AI_BASE_URL=https://api.openai.com
 AI_GEMINI_API_KEY=AIza...
 ```
 
-Ayarlar > AI sağlayıcısı bölümünden **Otomatik / OpenAI uyumlu / Gemini / DeepSeek / Yerel şablon** seçilebilir. Otomatik mod, yapılandırılmış sağlayıcılar arasından önce DeepSeek (en ekonomik), sonra OpenAI uyumlu uç, ardından Gemini dener; hiç anahtar yoksa gerçek verilerden üretilen yerel şablona düşer — uygulama asla AI olmadan çalışamaz duruma gelmez.
+Ayarlar > AI sağlayıcısı bölümünden **Otomatik / OpenAI uyumlu / Gemini / DeepSeek / Yerel şablon** seçilebilir. Ayrıca **Ayarlar > API anahtarları** bölümünden anahtarlar doğrudan uygulama içine girilebilir: anahtarlar **Android Keystore ile şifrelenerek** cihazda saklanır, uygulamayı yeniden derlemek gerekmez ve hiçbir yere gönderilmez (yalnızca seçilen sağlayıcıya). Otomatik mod, yapılandırılmış sağlayıcılar arasından önce DeepSeek (en ekonomik), sonra OpenAI uyumlu uç, ardından Gemini dener; hiç anahtar yoksa gerçek verilerden üretilen yerel şablona düşer — uygulama asla AI olmadan çalışamaz duruma gelmez.
 
 Environment variable alternatifi: `FIRMS_API_KEY=... ./gradlew assembleDebug` (aynı adlar).
 

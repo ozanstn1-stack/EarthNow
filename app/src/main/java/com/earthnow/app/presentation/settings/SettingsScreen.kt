@@ -43,6 +43,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
+    val aiKeys by viewModel.aiKeys.collectAsStateWithLifecycle()
     val s = settings ?: return
 
     Scaffold(
@@ -154,6 +155,17 @@ fun SettingsScreen(
                     ),
                     s.aiProvider
                 ) { viewModel.setAiProvider(it) }
+            }
+            SettingGroup(stringResource(R.string.ai_keys_title)) {
+                AiKeysEditor(
+                    maskedDeepSeek = aiKeys.masked("deepseek"),
+                    maskedOpenAi = aiKeys.masked("openai"),
+                    maskedGemini = aiKeys.masked("gemini"),
+                    baseUrl = aiKeys.baseUrl,
+                    onSave = { provider, value -> viewModel.saveAiKey(provider, value) },
+                    onClear = { provider -> viewModel.clearAiKey(provider) },
+                    onSaveBaseUrl = { url -> viewModel.saveBaseUrl(url) }
+                )
             }
 
             SettingHeader(stringResource(R.string.settings_notifications))

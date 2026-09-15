@@ -19,12 +19,17 @@ import kotlinx.coroutines.flow.map
 
 @Singleton
 class SettingsRepository @Inject constructor(
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val secureStore: com.earthnow.app.data.security.SecureStore
 ) {
 
     private object Keys {
         val THEME = stringPreferencesKey("theme")
         val LANGUAGE = stringPreferencesKey("language")
+        val AI_DEEPSEEK_RT = stringPreferencesKey("ai_deepseek_rt")
+        val AI_OPENAI_RT = stringPreferencesKey("ai_openai_rt")
+        val AI_GEMINI_RT = stringPreferencesKey("ai_gemini_rt")
+        val AI_OPENAI_RT_BASE = stringPreferencesKey("ai_openai_rt_base")
         val MAP_STYLE = stringPreferencesKey("map_style")
         val DEFAULT_LAYERS = stringSetPreferencesKey("default_layers")
         val TEMP_UNIT = stringPreferencesKey("temp_unit")
@@ -83,6 +88,35 @@ class SettingsRepository @Inject constructor(
 
     suspend fun setTheme(mode: String) = dataStore.edit { it[Keys.THEME] = mode }
     suspend fun setLanguage(mode: String) = dataStore.edit { it[Keys.LANGUAGE] = mode }
+
+    // ---- Runtime AI keys (entered in Settings, encrypted with the Keystore) ----
+
+    private fun runtimeKeyName(provider: String): Preferences.Key<String>? = when (provider) {
+        "deepseek" -> Keys.AI_DEEPSEEK_RT
+        "openai" -> Keys.AI_OPENAI_RT
+        "gemini" -> Keys.AI_GEMINI_RT
+        else -> null
+    }
+
+    suspend fun setRuntimeAiKey(provider: String, value: String) {
+        val keyName = runtimeKeyName(provider) ?: return
+        val stored = if (value.isBlank()) "" else (secureStore.encrypt(value) ?: "")
+        dataStore.edit { it[keyName] = stored }
+    }
+
+    suspend fun runtimeAiKey(provider: String): String {
+        val keyName = runtimeKeyName(provider) ?: return ""
+        val stored = dataStore.data.first()[keyName] ?: return ""
+        if (stored.isBlank()) return ""
+        return secureStore.decrypt(stored) ?: ""
+    }
+
+    suspend fun setRuntimeOpenAiBaseUrl(url: String) = dataStore.edit {
+        it[Keys.AI_OPENAI_RT_BASE] = url.trim()
+    }
+
+    suspend fun runtimeOpenAiBaseUrl(): String =
+        dataStore.data.first()[Keys.AI_OPENAI_RT_BASE] ?: ""
     suspend fun setMapStyle(style: String) = dataStore.edit { it[Keys.MAP_STYLE] = style }
     suspend fun setDefaultLayers(layers: Set<String>) = dataStore.edit { it[Keys.DEFAULT_LAYERS] = layers }
     suspend fun setTempUnit(unit: Units.TempUnit) = dataStore.edit { it[Keys.TEMP_UNIT] = unit.name }

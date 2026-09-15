@@ -135,15 +135,29 @@ object AppModule {
     @Provides
     @Singleton
     @javax.inject.Named("openai")
-    fun provideOpenAiApi(okHttp: OkHttpClient, moshi: Moshi): OpenAiApi {
+    fun provideOpenAiApi(
+        okHttp: OkHttpClient,
+        moshi: Moshi,
+        aiKeyStore: com.earthnow.app.ai.AiKeyStore
+    ): OpenAiApi {
         val baseUrl = BuildConfig.AI_BASE_URL.ifBlank { "https://api.openai.com" }
         return Retrofit.Builder()
             .baseUrl(if (baseUrl.endsWith("/")) baseUrl else "$baseUrl/")
             .client(okHttp.newBuilder().addInterceptor { chain ->
-                val req = chain.request().newBuilder()
-                if (BuildConfig.AI_OPENAI_API_KEY.isNotBlank()) {
-                    req.header("Authorization", "Bearer ${BuildConfig.AI_OPENAI_API_KEY}")
+                var req = chain.request().newBuilder()
+                // Runtime base URL (Settings) overrides the build-time one.
+                val runtimeBase = aiKeyStore.blockingRuntimeBaseUrl()
+                if (runtimeBase.isNotBlank()) {
+                    val newBase = runtimeBase.trimEnd('/') + "/"
+                    val oldUrl = chain.request().url
+                    val newUrl = oldUrl.newBuilder()
+                        .scheme(if (newBase.startsWith("https")) "https" else "http")
+                        .host(newBase.substringAfter("://").trimEnd('/').substringBefore('/'))
+                        .build()
+                    req = req.url(newUrl)
                 }
+                val key = aiKeyStore.blockingEffectiveKey("openai")
+                if (key.isNotBlank()) req.header("Authorization", "Bearer $key")
                 chain.proceed(req.build())
             }.build())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -165,13 +179,18 @@ object AppModule {
     @Provides
     @Singleton
     @javax.inject.Named("deepseek")
-    fun provideDeepSeekApi(okHttp: OkHttpClient, moshi: Moshi): OpenAiApi =
+    fun provideDeepSeekApi(
+        okHttp: OkHttpClient,
+        moshi: Moshi,
+        aiKeyStore: com.earthnow.app.ai.AiKeyStore
+    ): OpenAiApi =
         Retrofit.Builder()
             .baseUrl("https://api.deepseek.com/")
             .client(okHttp.newBuilder().addInterceptor { chain ->
                 val req = chain.request().newBuilder()
-                if (BuildConfig.AI_DEEPSEEK_API_KEY.isNotBlank()) {
-                    req.header("Authorization", "Bearer ${BuildConfig.AI_DEEPSEEK_API_KEY}")
+                val key = aiKeyStore.blockingEffectiveKey("deepseek")
+                if (key.isNotBlank()) {
+                    req.header("Authorization", "Bearer $key")
                 }
                 chain.proceed(req.build())
             }.build())

@@ -179,7 +179,7 @@
     <string name="settings_live_note_sub">Shown as a one-time note — keep enabled</string>
     <string name="settings_clear_cache">Clear search history &amp; cache</string>
     <string name="settings_about">About</string>
-    <string name="settings_about_text">Earth Now v1.0.4 — live Earth explorer.\nData sources: Open-Meteo, USGS, NOAA SWPC, NASA FIRMS, RainViewer, Smithsonian GVP, Natural Earth.\nBasemaps: © OpenFreeMap, © OpenStreetMap contributors, Sentinel-2 cloudless © EOX.</string>
+    <string name="settings_about_text">Earth Now v1.0.5 — live Earth explorer.\nData sources: Open-Meteo, USGS, NOAA SWPC, NASA FIRMS, RainViewer, Smithsonian GVP, Natural Earth.\nBasemaps: © OpenFreeMap, © OpenStreetMap contributors, Sentinel-2 cloudless © EOX.</string>
 
     <!-- Favorites -->
     <string name="favorites_title">Favorites</string>
@@ -260,6 +260,18 @@
     <string name="update_note_volcanoes">Catalog: updated periodically; no real-time feed</string>
     <string name="update_note_aurora">Updated every ~30 minutes</string>
     <string name="update_note_daynight">Real time</string>
+    <string name="ai_keys_title">API keys (stored encrypted on this device)</string>
+    <string name="ai_keys_hint">Enter a key to enable AI without rebuilding the app. Keys are encrypted with the Android Keystore and are never sent anywhere except the selected provider.</string>
+    <string name="ai_key_deepseek">DeepSeek API key</string>
+    <string name="ai_key_openai">OpenAI API key</string>
+    <string name="ai_key_gemini">Gemini API key</string>
+    <string name="ai_key_base_url">OpenAI-compatible base URL (optional)</string>
+    <string name="ai_key_saved">Saved: %1$s</string>
+    <string name="ai_key_none">Not configured</string>
+    <string name="ai_save">Save</string>
+    <string name="ai_clear_key">Clear</string>
+    <string name="ai_key_show">Show key</string>
+    <string name="ai_key_hide">Hide key</string>
     <!-- Notifications -->
     <string name="notif_eq_near">🌍 M%1$s earthquake near %2$s</string>
     <string name="notif_eq_detail">%1$s | %2$d km depth | %3$s</string>

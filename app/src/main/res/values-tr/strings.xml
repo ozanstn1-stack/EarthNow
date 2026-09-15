@@ -179,7 +179,7 @@
     <string name="settings_live_note_sub">Tek seferlik not olarak gösterilir</string>
     <string name="settings_clear_cache">Arama geçmişini ve önbelleği temizle</string>
     <string name="settings_about">Hakkında</string>
-    <string name="settings_about_text">Earth Now v1.0.4 — canlı Dünya keşfi.\nVeri kaynakları: Open-Meteo, USGS, NOAA SWPC, NASA FIRMS, RainViewer, Smithsonian GVP, Natural Earth.\nBaz haritalar: © OpenFreeMap, © OpenStreetMap katkıcıları, Sentinel-2 cloudless © EOX.</string>
+    <string name="settings_about_text">Earth Now v1.0.5 — canlı Dünya keşfi.\nVeri kaynakları: Open-Meteo, USGS, NOAA SWPC, NASA FIRMS, RainViewer, Smithsonian GVP, Natural Earth.\nBaz haritalar: © OpenFreeMap, © OpenStreetMap katkıcıları, Sentinel-2 cloudless © EOX.</string>
 
     <!-- Favorites -->
     <string name="favorites_title">Favoriler</string>
@@ -260,6 +260,18 @@
     <string name="update_note_volcanoes">Katalog: periyodik güncellenir; gerçek zamanlı akış yok</string>
     <string name="update_note_aurora">~30 dakikada bir güncellenir</string>
     <string name="update_note_daynight">Gerçek zamanlı</string>
+    <string name="ai_keys_title">API anahtarları (bu cihazda şifreli saklanır)</string>
+    <string name="ai_keys_hint">Uygulamayı yeniden derlemeden AI kullanmak için anahtar girin. Anahtarlar Android Keystore ile şifrelenir ve seçilen sağlayıcı dışında hiçbir yere gönderilmez.</string>
+    <string name="ai_key_deepseek">DeepSeek API anahtarı</string>
+    <string name="ai_key_openai">OpenAI API anahtarı</string>
+    <string name="ai_key_gemini">Gemini API anahtarı</string>
+    <string name="ai_key_base_url">OpenAI uyumlu base URL (isteğe bağlı)</string>
+    <string name="ai_key_saved">Kayıtlı: %1$s</string>
+    <string name="ai_key_none">Yapılandırılmadı</string>
+    <string name="ai_save">Kaydet</string>
+    <string name="ai_clear_key">Temizle</string>
+    <string name="ai_key_show">Anahtarı göster</string>
+    <string name="ai_key_hide">Anahtarı gizle</string>
     <!-- Notifications -->
     <string name="notif_eq_near">🌍 M%1$s deprem — %2$s yakınında</string>
     <string name="notif_eq_detail">%1$s | %2$d km derinlik | %3$s</string>
