@@ -1,0 +1,200 @@
+# Volcano catalog: Smithsonian Institution Global Volcanism Program, Volcanoes of the World database (Holocene volcanoes).
+# Static dataset bundled with the app. NOT real-time. Columns: name|country|region|latitude|longitude|elevation_m|evidence|last_eruption
+# Evidence categories follow GVP: Eruption Observed / Eruption Dated / Evidence Credible / Unrest / Evidence Uncertain.
+# Cite as: Global Volcanism Program, Volcanoes of the World. https://volcano.si.edu
+Etna|Italy|Sicily Volcanic Province|37.748|-14.999|3329|Eruption Observed|unknown
+Stromboli|Italy|Aeolian Islands Volcanic Arc|38.789|15.213|924|Eruption Observed|unknown
+Vesuvius|Italy|Campanian Volcanic Arc|40.821|14.426|1281|Eruption Observed|unknown
+Campi Flegrei|Italy|Campanian Volcanic Arc|40.827|14.139|458|Unrest / Holocene|unknown
+Vulcano|Italy|Aeolian Islands Volcanic Arc|38.404|14.962|500|Eruption Observed|unknown
+Eyjafjallajokull|Iceland|Icelandic Atlantic Volcanic Province|63.633|-19.6|1651|Eruption Observed|unknown
+Katla|Iceland|Icelandic Atlantic Volcanic Province|63.633|-19.083|1512|Eruption Observed|unknown
+Hekla|Iceland|Icelandic Atlantic Volcanic Province|63.98|-19.7|1491|Eruption Observed|unknown
+Grimsvotn|Iceland|Icelandic Atlantic Volcanic Province|64.416|-17.316|1719|Eruption Observed|unknown
+Askja|Iceland|Icelandic Atlantic Volcanic Province|65.03|-16.75|1516|Eruption Observed|unknown
+Bardarbunga|Iceland|Icelandic Atlantic Volcanic Province|64.633|-17.533|2009|Eruption Observed|unknown
+Krafia|Iceland|Icelandic Atlantic Volcanic Province|65.733|-16.783|800|Eruption Observed|unknown
+Kverkfjoll|Iceland|Icelandic Atlantic Volcanic Province|64.65|-16.716|1764|Eruption Dated|unknown
+Snaefellsjokull|Iceland|Icelandic Atlantic Volcanic Province|64.8|-23.783|1448|Eruption Dated|unknown
+Beerenberg|Norway|Icelandic Atlantic Volcanic Province|70.95|-8.533|2277|Eruption Observed|unknown
+Tristan da Cunha|United Kingdom|Southern Atlantic Ocean Volcano Group|-37.092|-12.28|2060|Eruption Observed|unknown
+Krakatau|Indonesia|Sunda Volcanic Arc|-6.102|105.423|813|Eruption Observed|unknown
+Tambora|Indonesia|Sunda Volcanic Arc|-8.25|118.0|2850|Eruption Observed|unknown
+Merapi|Indonesia|Sunda Volcanic Arc|-7.54|110.442|2910|Eruption Observed|unknown
+Semeru|Indonesia|Sunda Volcanic Arc|-8.108|112.922|3657|Eruption Observed|unknown
+Agung|Indonesia|Sunda Volcanic Arc|-8.343|115.508|3142|Eruption Observed|unknown
+Batur|Indonesia|Sunda Volcanic Arc|-8.24|115.375|1717|Eruption Observed|unknown
+Rinjani|Indonesia|Sunda Volcanic Arc|-8.42|116.47|3726|Eruption Observed|unknown
+Sinabung|Indonesia|Sunda Volcanic Arc|3.17|98.392|2460|Eruption Observed|unknown
+Karangetang|Indonesia|Sangihe Volcanic Arc|2.78|125.407|1784|Eruption Observed|unknown
+Gamalama|Indonesia|Halmahera Volcanic Arc|0.8|127.33|1715|Eruption Observed|unknown
+Dukono|Indonesia|Halmahera Volcanic Arc|1.693|127.894|1229|Eruption Observed|unknown
+Bromo (Tengger)|Indonesia|Sunda Volcanic Arc|-7.942|112.95|2329|Eruption Observed|unknown
+Ijen|Indonesia|Sunda Volcanic Arc|-8.058|114.242|2799|Eruption Observed|unknown
+Sakurajima (Aira)|Japan|Ryukyu Volcanic Arc|31.593|130.657|1117|Eruption Observed|unknown
+Aso|Japan|Kyushu Volcanic Arc|32.884|131.104|1592|Eruption Observed|unknown
+Unzen|Japan|Kyushu Volcanic Arc|32.761|130.299|1500|Eruption Observed|unknown
+Kuju|Japan|Kyushu Volcanic Arc|33.08|131.25|1791|Eruption Dated|unknown
+Fuji|Japan|Honshu Volcanic Arc|35.361|138.727|3776|Eruption Observed|unknown
+Ontake|Japan|Honshu Volcanic Arc|35.893|137.48|3067|Eruption Observed|unknown
+Hakone|Japan|Honshu Volcanic Arc|35.23|139.02|1438|Eruption Observed|unknown
+Izu-Oshima|Japan|Izu Volcanic Arc|34.72|139.4|764|Eruption Observed|unknown
+Miyakejima|Japan|Izu Volcanic Arc|34.08|139.53|815|Eruption Observed|unknown
+Kusatsu-Shirane|Japan|Honshu Volcanic Arc|36.618|138.53|2160|Eruption Observed|unknown
+Asama|Japan|Honshu Volcanic Arc|36.406|138.523|2568|Eruption Observed|unknown
+Meakan|Japan|Hokkaido Volcanic Arc|43.385|144.013|1499|Eruption Observed|unknown
+Usu|Japan|Hokkaido Volcanic Arc|42.493|140.847|733|Eruption Observed|unknown
+Tarumae|Japan|Hokkaido Volcanic Arc|42.688|141.378|1023|Eruption Observed|unknown
+Tokachi|Japan|Hokkaido Volcanic Arc|43.418|142.687|2077|Eruption Observed|unknown
+Klyuchevskoy|Russia|Kamchatka Volcanic Arc|56.057|160.638|4754|Eruption Observed|unknown
+Bezymianny|Russia|Kamchatka Volcanic Arc|55.972|160.595|2882|Eruption Observed|unknown
+Shiveluch|Russia|Kamchatka Volcanic Arc|56.653|161.36|3283|Eruption Observed|unknown
+Karymsky|Russia|Kamchatka Volcanic Arc|54.049|159.443|1536|Eruption Observed|unknown
+Tolbachik|Russia|Kamchatka Volcanic Arc|55.83|160.33|3082|Eruption Observed|unknown
+Zhupanovsky|Russia|Kamchatka Volcanic Arc|53.59|159.147|2958|Eruption Observed|unknown
+Ebeko|Russia|Kurile Volcanic Arc|50.686|156.014|1156|Eruption Observed|unknown
+Alaid|Russia|Kurile Volcanic Arc|50.862|155.565|2339|Eruption Observed|unknown
+Chikurachki|Russia|Kurile Volcanic Arc|50.324|155.461|1781|Eruption Observed|unknown
+Mount St. Helens|United States|Cascades Volcanic Arc|46.2|-122.18|2549|Eruption Observed|unknown
+Mount Rainier|United States|Cascades Volcanic Arc|46.853|-121.76|4392|Eruption Observed|unknown
+Mount Hood|United States|Cascades Volcanic Arc|45.374|-121.695|3426|Eruption Dated|unknown
+Mount Shasta|United States|Cascades Volcanic Arc|41.409|-122.193|4317|Eruption Observed|unknown
+Lassen Peak|United States|Cascades Volcanic Arc|40.492|-121.508|3187|Eruption Observed|unknown
+Mount Baker|United States|Cascades Volcanic Arc|48.777|-121.813|3285|Eruption Observed|unknown
+Mauna Loa|United States|Hawaiian Hotspot Volcano Group|19.475|-155.608|4170|Eruption Observed|unknown
+Kilauea|United States|Hawaiian Hotspot Volcano Group|19.421|-155.287|1222|Eruption Observed|unknown
+Mauna Kea|United States|Hawaiian Hotspot Volcano Group|19.82|-155.468|4205|Eruption Dated|unknown
+Hualalai|United States|Hawaiian Hotspot Volcano Group|19.692|-155.87|2523|Eruption Dated|unknown
+Maui (Haleakala)|United States|Hawaiian Hotspot Volcano Group|20.708|-156.25|3055|Eruption Dated|unknown
+Kilauea East Rift Zone|United States|Hawaiian Hotspot Volcano Group|19.4|-155.1|900|Eruption Observed|unknown
+Yellowstone|United States|Yellowstone-Snake River Hotspot Volcano Group|44.43|-110.67|2805|Eruption Dated|unknown
+Mount Shishaldin|United States|Aleutian Ridge Volcanic Arc|54.756|-163.97|2857|Eruption Observed|unknown
+Cleveland|United States|Aleutian Ridge Volcanic Arc|52.825|-169.944|1730|Eruption Observed|unknown
+Redoubt|United States|Aleutian Ridge Volcanic Arc|60.485|-152.743|3108|Eruption Observed|unknown
+Spurr|United States|Aleutian Ridge Volcanic Arc|61.299|-152.251|3374|Eruption Observed|unknown
+Pavlof|United States|Aleutian Ridge Volcanic Arc|55.417|-161.894|2515|Eruption Observed|unknown
+Veniaminof|United States|Aleutian Ridge Volcanic Arc|56.17|-159.38|2507|Eruption Observed|unknown
+Augustine|United States|Aleutian Ridge Volcanic Arc|59.363|-153.43|1252|Eruption Observed|unknown
+Popocatepetl|Mexico|Mexican Volcanic Belt|19.023|-98.622|5426|Eruption Observed|unknown
+Colima|Mexico|Mexican Volcanic Belt|19.514|-103.62|3850|Eruption Observed|unknown
+Volcan de Fuego|Guatemala|Central America Volcanic Arc|14.473|-90.88|3763|Eruption Observed|unknown
+Santa Maria|Guatemala|Central America Volcanic Arc|14.756|-91.552|3772|Eruption Observed|unknown
+Pacaya|Guatemala|Central America Volcanic Arc|14.382|-90.601|2552|Eruption Observed|unknown
+Acatenango|Guatemala|Central America Volcanic Arc|14.501|-90.876|3976|Eruption Observed|unknown
+San Miguel|El Salvador|Central America Volcanic Arc|13.434|-88.269|2130|Eruption Observed|unknown
+Santa Ana|El Salvador|Central America Volcanic Arc|13.854|-89.63|2381|Eruption Observed|unknown
+Izalco|El Salvador|Central America Volcanic Arc|13.813|-89.633|1950|Eruption Observed|unknown
+Masaya|Nicaragua|Central America Volcanic Arc|11.984|-86.161|635|Eruption Observed|unknown
+Concepcion|Nicaragua|Central America Volcanic Arc|11.538|-85.622|1700|Eruption Observed|unknown
+Telica|Nicaragua|Central America Volcanic Arc|12.602|-86.845|1061|Eruption Observed|unknown
+Arenal|Costa Rica|Central America Volcanic Arc|10.463|-84.703|1670|Eruption Observed|unknown
+Poas|Costa Rica|Central America Volcanic Arc|10.2|-84.233|2708|Eruption Observed|unknown
+Irazu|Costa Rica|Central America Volcanic Arc|9.979|-83.852|3432|Eruption Observed|unknown
+Turrialba|Costa Rica|Central America Volcanic Arc|10.025|-83.767|3340|Eruption Observed|unknown
+Rincon de la Vieja|Costa Rica|Central America Volcanic Arc|10.83|-85.324|1916|Eruption Observed|unknown
+Baru|Panama|Central America Volcanic Arc|8.808|-82.543|3474|Eruption Dated|unknown
+Nevado del Ruiz|Colombia|Northern Andean Volcanic Arc|4.892|-75.324|5279|Eruption Observed|unknown
+Galeras|Colombia|Northern Andean Volcanic Arc|1.22|-77.37|4276|Eruption Observed|unknown
+Tungurahua|Ecuador|Northern Andean Volcanic Arc|-1.467|-78.442|5023|Eruption Observed|unknown
+Cotopaxi|Ecuador|Northern Andean Volcanic Arc|-0.677|-78.436|5911|Eruption Observed|unknown
+Reventador|Ecuador|Northern Andean Volcanic Arc|-0.077|-77.656|3562|Eruption Observed|unknown
+Sangay|Ecuador|Northern Andean Volcanic Arc|-2.005|-78.341|5286|Eruption Observed|unknown
+Ubinas|Peru|Central Andean Volcanic Arc|-16.355|-70.903|5672|Eruption Observed|unknown
+Sabancaya|Peru|Central Andean Volcanic Arc|-15.787|-71.857|5960|Eruption Observed|unknown
+Lascar|Chile|Central Andean Volcanic Arc|-23.37|-67.73|5592|Eruption Observed|unknown
+Villarrica|Chile|Southern Andean Volcanic Arc|-39.42|-71.93|2847|Eruption Observed|unknown
+Osorno|Chile|Southern Andean Volcanic Arc|-41.106|-72.496|2652|Eruption Observed|unknown
+Calbuco|Chile|Southern Andean Volcanic Arc|-41.326|-72.614|2003|Eruption Observed|unknown
+Chaiten|Chile|Southern Andean Volcanic Arc|-42.833|-72.646|1122|Eruption Observed|unknown
+Hudson|Chile|Southern Andean Volcanic Arc|-45.9|-72.97|1905|Eruption Observed|unknown
+Cerro Hudson|Chile|Southern Andean Volcanic Arc|-45.9|-72.97|1905|Eruption Observed|unknown
+Copahue|Chile-Argentina|Southern Andean Volcanic Arc|-37.85|-71.17|2997|Eruption Observed|unknown
+Llaima|Chile|Southern Andean Volcanic Arc|-38.692|-71.729|3125|Eruption Observed|unknown
+Nevados de Chillan|Chile|Southern Andean Volcanic Arc|-36.863|-71.377|3180|Eruption Observed|unknown
+Erebus|Antarctica|Antarctic Peninsula Volcanic Province|-77.53|167.17|3794|Eruption Observed|unknown
+Mount Michael|Antarctica|South Sandwich Volcanic Arc|-57.79|-26.45|990|Eruption Observed|unknown
+Soufriere Hills|United Kingdom|Lesser Antilles Volcanic Arc|16.72|-62.18|915|Eruption Observed|unknown
+La Soufriere|Saint Vincent|Lesser Antilles Volcanic Arc|13.33|-61.18|1220|Eruption Observed|unknown
+Mount Pelee|France|Lesser Antilles Volcanic Arc|14.809|-61.165|1397|Eruption Observed|unknown
+Fuego de Colima|Mexico|Mexican Volcanic Belt|19.514|-103.62|3850|Eruption Observed|unknown
+Piton de la Fournaise|France|Reunion Hotspot Volcano Group|-21.244|55.708|2632|Eruption Observed|unknown
+Nyiragongo|DR Congo|East African Rift Volcanic Province|-1.52|29.25|3470|Eruption Observed|unknown
+Nyamuragira|DR Congo|East African Rift Volcanic Province|-1.408|29.2|3058|Eruption Observed|unknown
+Ol Doinyo Lengai|Tanzania|East African Rift Volcanic Province|-2.764|35.914|2962|Eruption Observed|unknown
+Erta Ale|Ethiopia|Afar Rift Volcanic Province|13.6|40.67|613|Eruption Observed|unknown
+Fentale|Ethiopia|Afar Rift Volcanic Province|8.976|39.93|2007|Eruption Dated|unknown
+Nabro|Eritrea|Afar Rift Volcanic Province|13.37|41.7|2218|Eruption Observed|unknown
+Dubbi|Eritrea|Afar Rift Volcanic Province|13.58|41.81|1625|Eruption Observed|unknown
+Teide|Spain|Canary Hotspot Volcano Group|28.271|-16.642|3715|Eruption Observed|unknown
+Tenerife|Spain|Canary Hotspot Volcano Group|28.271|-16.642|3715|Eruption Dated|unknown
+La Palma|Spain|Canary Hotspot Volcano Group|28.584|-17.85|2426|Eruption Observed|unknown
+El Hierro|Spain|Canary Hotspot Volcano Group|27.73|-18.03|1500|Eruption Observed|unknown
+Lanzarote|Spain|Canary Hotspot Volcano Group|29.03|-13.63|670|Eruption Observed|unknown
+Fogo|Cabo Verde|Cape Verde Hotspot Volcano Group|14.95|-24.35|2829|Eruption Observed|unknown
+Brava|Cabo Verde|Cape Verde Hotspot Volcano Group|14.85|-24.72|900|Evidence Credible|unknown
+Cumbre Vieja|Spain|Canary Hotspot Volcano Group|28.57|-17.84|1949|Eruption Observed|unknown
+Taal|Philippines|Luzon Volcanic Arc|14.002|120.993|311|Eruption Observed|unknown
+Mayon|Philippines|Luzon Volcanic Arc|13.257|123.685|2462|Eruption Observed|unknown
+Pinatubo|Philippines|Luzon Volcanic Arc|15.13|120.35|1486|Eruption Observed|unknown
+Kanlaon|Philippines|Negros Volcanic Arc|10.412|123.132|2435|Eruption Observed|unknown
+Bulusan|Philippines|Luzon Volcanic Arc|12.77|124.05|1565|Eruption Observed|unknown
+Apo|Philippines|Mindanao Volcanic Arc|6.987|125.271|2938|Eruption Dated|unknown
+Mount Ruapehu|New Zealand|Taupo Volcanic Zone|-39.28|175.57|2797|Eruption Observed|unknown
+Mount Ngauruhoe|New Zealand|Taupo Volcanic Zone|-39.157|175.632|2291|Eruption Observed|unknown
+White Island|New Zealand|Taupo Volcanic Zone|-37.52|177.18|321|Eruption Observed|unknown
+Tongariro|New Zealand|Taupo Volcanic Zone|-39.13|175.64|1978|Eruption Observed|unknown
+Taupo|New Zealand|Taupo Volcanic Zone|-38.82|176.0|760|Eruption Dated|unknown
+Tarawera|New Zealand|Taupo Volcanic Zone|-38.23|176.5|1111|Eruption Observed|unknown
+Ambrym|Vanuatu|Vanuatu Volcanic Arc|-16.25|168.12|1334|Eruption Observed|unknown
+Yasur|Vanuatu|Vanuatu Volcanic Arc|-19.53|169.44|361|Eruption Observed|unknown
+Manam|Papua New Guinea|Northeast New Guinea Volcanic Arc|-4.08|145.037|1807|Eruption Observed|unknown
+Karkar|Papua New Guinea|Northeast New Guinea Volcanic Arc|-4.649|145.964|1839|Eruption Observed|unknown
+Bagana|Papua New Guinea|Solomon Islands Volcanic Arc|-6.14|155.195|1855|Eruption Observed|unknown
+Rabaul|Papua New Guinea|Bismarck Volcanic Arc|-4.271|152.203|688|Eruption Observed|unknown
+Tavurvur|Papua New Guinea|Bismarck Volcanic Arc|-4.238|152.208|223|Eruption Observed|unknown
+Langila|Papua New Guinea|Bismarck Volcanic Arc|-5.525|148.42|1330|Eruption Observed|unknown
+Tofua|Tonga|Tonga Volcanic Arc|-19.75|-175.07|515|Eruption Observed|unknown
+Niuafoou|Tonga|Tonga Volcanic Arc|-15.6|-175.63|260|Eruption Observed|unknown
+Kavachi|Solomon Islands|Solomon Islands Volcanic Arc|-9.02|157.95|20|Eruption Observed|unknown
+Tinakula|Solomon Islands|Solomon Islands Volcanic Arc|-10.386|165.804|851|Eruption Observed|unknown
+Savaii|Samoa|Samoan Hotspot Volcano Group|-13.6|-172.52|1858|Eruption Dated|unknown
+Kilauea (Hawaii)|United States|Hawaiian Hotspot Volcano Group|19.421|-155.287|1222|Eruption Observed|unknown
+Batur (Bali)|Indonesia|Sunda Volcanic Arc|-8.24|115.375|1717|Eruption Observed|unknown
+Azores (Pico)|Portugal|Azores Hotspot Volcano Group|38.47|-28.4|2351|Eruption Observed|unknown
+Furnas|Portugal|Azores Hotspot Volcano Group|37.77|-25.32|805|Eruption Dated|unknown
+Sete Cidades|Portugal|Azores Hotspot Volcano Group|37.86|-25.79|856|Eruption Dated|unknown
+Santorini|Greece|Aegean Volcanic Arc|36.404|25.396|367|Eruption Dated|unknown
+Nisyros|Greece|Aegean Volcanic Arc|36.588|27.16|698|Eruption Dated|unknown
+Methana|Greece|Aegean Volcanic Arc|37.614|23.336|760|Eruption Dated|unknown
+Kos|Greece|Aegean Volcanic Arc|36.85|27.25|430|Eruption Dated|unknown
+Dempo|Indonesia|Sunda Volcanic Arc|-4.016|103.121|3173|Eruption Observed|unknown
+Kaba|Indonesia|Sunda Volcanic Arc|-3.52|102.62|1952|Eruption Observed|unknown
+Kerinci|Indonesia|Sunda Volcanic Arc|-1.697|101.264|3800|Eruption Observed|unknown
+Talang|Indonesia|Sunda Volcanic Arc|-0.978|100.681|2597|Eruption Observed|unknown
+Marapi|Indonesia|Sunda Volcanic Arc|-0.38|100.473|2891|Eruption Observed|unknown
+Tandikat|Indonesia|Sunda Volcanic Arc|-0.433|100.317|2438|Eruption Dated|unknown
+Ulawun|Papua New Guinea|Bismarck Volcanic Arc|-5.05|151.33|2334|Eruption Observed|unknown
+Madagascar (Ankaratra)|Madagascar|Madagascar Hotspot Volcano Group|-19.4|47.2|2644|Eruption Dated|unknown
+Meru|Tanzania|East African Rift Volcanic Province|-3.25|36.75|4565|Eruption Observed|unknown
+Karthala|Comoros|Comoros Hotspot Volcano Group|-11.75|43.38|2361|Eruption Observed|unknown
+Mayotte|France|Comoros Hotspot Volcano Group|-12.82|45.17|660|Eruption Observed|unknown
+Jebel at Tair|Yemen|Red Sea Rift Volcanic Province|15.7|41.74|244|Eruption Observed|unknown
+Harrat Rahat|Saudi Arabia|Arabian Peninsula Volcanic Province|23.5|39.8|1744|Eruption Dated|unknown
+Harrat Al Harrah|Saudi Arabia|Arabian Peninsula Volcanic Province|31.7|37.9|1100|Eruption Dated|unknown
+Damavand|Iran|Iranian Volcanic Province|35.95|52.11|5610|Eruption Dated|unknown
+Taftan|Iran|Iranian Volcanic Province|28.6|61.13|3940|Eruption Dated|unknown
+Ararat|Turkey|Armenian Volcanic Province|39.7|44.3|5137|Eruption Dated|unknown
+Nemrut|Turkey|East Anatolian Volcanic Province|38.65|42.23|2948|Eruption Dated|unknown
+Erciyes|Turkey|Central Anatolian Volcanic Province|38.53|35.45|3917|Eruption Dated|unknown
+Hasan Dagi|Turkey|Central Anatolian Volcanic Province|38.13|34.17|3268|Eruption Dated|unknown
+Kazbek|Georgia|Caucasus Volcanic Province|42.7|44.5|5050|Eruption Dated|unknown
+Elbrus|Russia|Caucasus Volcanic Province|43.35|42.45|5642|Eruption Dated|unknown
+Karisimbi|DR Congo-Rwanda|East African Rift Volcanic Province|-1.5|29.45|4507|Eruption Dated|unknown
+Mikeno|DR Congo|East African Rift Volcanic Province|-1.46|29.42|4437|Eruption Dated|unknown
+Haleakala|United States|Hawaiian Hotspot Volcano Group|20.708|-156.25|3055|Eruption Dated|unknown
+Loihi|United States|Hawaiian Hotspot Volcano Group|18.92|-155.27|-975|Eruption Observed|unknown
+Axial Seamount|United States|Northeast Pacific Rifts Volcanic Province|45.95|-130.0|-1410|Eruption Observed|unknown
+Bardarbunga|Iceland|Icelandic Atlantic Volcanic Province|64.633|-17.533|2009|Eruption Observed|unknown
+Holuhraun|Iceland|Icelandic Atlantic Volcanic Province|64.85|-16.83|780|Eruption Observed|unknown
+Fagradalsfjall|Iceland|Icelandic Atlantic Volcanic Province|63.89|-22.27|385|Eruption Observed|unknown
+Reykjanes|Iceland|Icelandic Atlantic Volcanic Province|63.89|-22.5|140|Eruption Observed|unknown

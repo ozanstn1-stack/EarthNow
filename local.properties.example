@@ -1,0 +1,16 @@
+# Copy this file to local.properties and fill in your keys.
+# Keys are NEVER committed to the repository.
+# See README.md "API Key Ekleme" section.
+#
+# Android SDK location
+sdk.dir=C\:\\Users\\<KULLANICI>\\AppData\\Local\\Android\\Sdk
+#
+# NASA FIRMS MAP_KEY (free at https://firms.modaps.eosdis.nasa.gov/api/area)
+# Empty = the Wildfires layer shows "Data unavailable" (no fabrication).
+FIRMS_API_KEY=
+#
+# AI providers - configure at least one, or leave empty to use the local
+# real-data template fallback (no AI).
+AI_OPENAI_API_KEY=
+AI_BASE_URL=https://api.openai.com
+AI_GEMINI_API_KEY=
