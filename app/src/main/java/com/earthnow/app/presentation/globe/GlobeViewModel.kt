@@ -1,4 +1,4 @@
-﻿package com.earthnow.app.presentation.globe
+package com.earthnow.app.presentation.globe
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -45,7 +45,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -84,7 +86,7 @@ data class GlobeUiState(
 
 @HiltViewModel
 class GlobeViewModel @Inject constructor(
-    private val SettingsRepository: SettingsRepository,
+    private val settingsRepository: SettingsRepository,
     private val gridRepository: GridWeatherRepository,
     private val weatherRepository: WeatherRepository,
     private val earthquakeRepository: EarthquakeRepository,
@@ -114,7 +116,7 @@ class GlobeViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 networkMonitor.isOnline,
-                SettingsRepository.settings,
+                settingsRepository.settings,
                 localDataRepository.favorites,
                 localDataRepository.recentSearches,
                 localDataRepository.watches
@@ -145,11 +147,17 @@ class GlobeViewModel @Inject constructor(
             }.collect { _ui.value = it }
         }
         viewModelScope.launch {
-            val settings = SettingsRepository.settings.first()
+            val settings = settingsRepository.settings.first()
             if (settings.defaultLayers.isNotEmpty()) {
                 val layers = LayerType.entries.filter { it.id in settings.defaultLayers }.toSet()
                 setLayers(layers)
             }
+        }
+        viewModelScope.launch {
+            settingsRepository.settings
+                .map { it.mapStyle }
+                .distinctUntilChanged()
+                .collect { style -> controller?.applyStyle(style) }
         }
     }
 
@@ -158,6 +166,7 @@ class GlobeViewModel @Inject constructor(
     override fun onGlobeReady(controller: GlobeController) {
         this.controller = controller
         _ui.update { it.copy(mapReady = true) }
+        controller.applyStyle(_ui.value.settings.mapStyle)
         // Restore active layers after a style reload
         _ui.value.enabledLayers.forEach { layer -> showLayer(layer) }
         // Load radar frames for the precipitation layer up front
@@ -217,8 +226,8 @@ class GlobeViewModel @Inject constructor(
         LayerType.entries.filter { it !in layers }.forEach { hideLayer(it) }
         restartRefreshJob()
         viewModelScope.launch {
-            val s = SettingsRepository.settings.first()
-            SettingsRepository.setDefaultLayers(layers.map { it.id }.toSet())
+            val s = settingsRepository.settings.first()
+            settingsRepository.setDefaultLayers(layers.map { it.id }.toSet())
         }
     }
 
@@ -280,8 +289,8 @@ class GlobeViewModel @Inject constructor(
                 runCatching {
                     val g = gridRepository.fetch("temperature_2m", req = gridRequest(bbox, time, battery))
                         .getValue("temperature_2m")
-                    val bmp = RasterRenderer.gridToBitmap(g) { ColorRamps.temperature(it) }
-                    c.updateImageSource(GlobeController.SRC_RASTER_TEMP, bmp, gridBbox(g))
+                    val json = RasterRenderer.gridToGeoJson(g) { ColorRamps.temperature(it) }
+                    c.updateGridGeoJson(GlobeController.SRC_RASTER_TEMP, json)
                     c.setRasterLayerVisible(GlobeController.SRC_RASTER_TEMP, true)
                 }.onFailure { layerError(LayerType.TEMPERATURE, it) }
             } else null
@@ -290,8 +299,8 @@ class GlobeViewModel @Inject constructor(
                 runCatching {
                     val g = gridRepository.fetch("cloud_cover", req = gridRequest(bbox, time, battery))
                         .getValue("cloud_cover")
-                    val bmp = RasterRenderer.gridToBitmap(g) { ColorRamps.cloud(it) }
-                    c.updateImageSource(GlobeController.SRC_RASTER_CLOUDS, bmp, gridBbox(g))
+                    val json = RasterRenderer.gridToGeoJson(g) { ColorRamps.cloud(it) }
+                    c.updateGridGeoJson(GlobeController.SRC_RASTER_CLOUDS, json)
                     c.setRasterLayerVisible(GlobeController.SRC_RASTER_CLOUDS, true)
                 }.onFailure { layerError(LayerType.CLOUDS, it) }
             } else null
@@ -308,8 +317,8 @@ class GlobeViewModel @Inject constructor(
                             isOcean = true
                         )
                     ).getValue("sea_surface_temperature")
-                    val bmp = RasterRenderer.gridToBitmap(g) { ColorRamps.oceanTemp(it) }
-                    c.updateImageSource(GlobeController.SRC_RASTER_OCEAN, bmp, gridBbox(g))
+                    val json = RasterRenderer.gridToGeoJson(g) { ColorRamps.oceanTemp(it) }
+                    c.updateGridGeoJson(GlobeController.SRC_RASTER_OCEAN, json)
                     c.setRasterLayerVisible(GlobeController.SRC_RASTER_OCEAN, true)
                 }.onFailure { layerError(LayerType.OCEAN_TEMP, it) }
             } else null
@@ -470,10 +479,10 @@ class GlobeViewModel @Inject constructor(
         viewModelScope.launch {
             _ui.update { it.copy(loadingLayers = it.loadingLayers + LayerType.AURORA) }
             runCatching { auroraRepository.latest() }.onSuccess { result ->
-                val bmp = withContext(Dispatchers.Default) {
-                    RasterRenderer.auroraToBitmap(result.data.points)
+                val json = withContext(Dispatchers.Default) {
+                    RasterRenderer.auroraToGeoJson(result.data.points)
                 }
-                c.updateImageSource(GlobeController.SRC_RASTER_AURORA, bmp, Bbox.world())
+                c.updateGridGeoJson(GlobeController.SRC_RASTER_AURORA, json)
                 c.setRasterLayerVisible(GlobeController.SRC_RASTER_AURORA, true)
                 _ui.update { st ->
                     st.copy(
@@ -670,7 +679,7 @@ fun generateSummary() {
 
     fun markBatteryWarningShown() {
         viewModelScope.launch {
-            SettingsRepository.setLiveWarningShown()
+            settingsRepository.setLiveWarningShown()
             _ui.update { it.copy(liveBatteryWarningShown = true) }
         }
     }

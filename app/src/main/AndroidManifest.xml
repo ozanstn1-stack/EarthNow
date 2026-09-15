@@ -34,10 +34,6 @@
         </activity>
 
         <meta-data
-            android:name="com.maplibre.android.accounts"
-            android:value="EarthNow (open-source explorer); https://github.com/earthnow/EarthNow; usage: basemap tiles only" />
-
-        <meta-data
             android:name="androidx.work.WorkManagerInitializer"
             android:value="androidx.startup"
             tools:node="remove" />

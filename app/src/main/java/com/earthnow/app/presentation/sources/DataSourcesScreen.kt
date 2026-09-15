@@ -85,8 +85,8 @@ fun DataSourcesScreen(onBack: () -> Unit) {
             }
 
             SectionCard("🗺️ Basemaps") {
-                SourceLine("Space (default)", "CARTO dark basemap + © OpenStreetMap contributors")
-                SourceLine("Satellite", "Esri World Imagery — © Esri, Maxar, Earthstar Geographics")
+                SourceLine("Space (default)", "OpenFreeMap vector basemap with in-app dark colors — © OpenFreeMap, © OpenStreetMap contributors")
+                SourceLine("Satellite", "Sentinel-2 cloudless © EOX (WMTS, keyless)")
                 SourceLine("Streets", "© OpenStreetMap contributors (ODbL)")
                 SourceLine("Tiles cached?", "MapLibre caches tiles locally only for rendering. No tile redistribution.")
             }

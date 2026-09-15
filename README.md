@@ -32,13 +32,17 @@ Google Earth + Windy + NASA Earth Observatory + AI  →  Earth Now
 
 | Teknoloji | Globe | API Key | Lisans | Neden seçilmedi / seçildi |
 |---|---|---|---|---|
-| **MapLibre GL Native** | ✅ (v11+) | Gerekmez | BSD-2 (açık kaynak) | ✅ **Seçildi** — gerçek 3D globe (`"projection": "globe"`), clustering, raster/image overlay, Android'de kanıtlanmış, tamamen ücretsiz |
-| Cesium | ⚠️ | — | Apache 2 | Native Android SDK yok (web/Unreal odaklı); Android'de gerçekçi entegrasyon yok |
+| **MapLibre GL JS 5 (WebView)** | ✅ Gerçek 3D globe | Gerekmez | BSD-2 (açık kaynak) | ✅ **Seçildi** — MapLibre Native'in aksine globe projeksiyonu destekler; tüm veri katmanları aynı motor üzerinde çalışır |
+| MapLibre GL Native (Android) | ❌ Yalnızca Web Mercator | Gerekmez | BSD-2 | MapLibre'nin resmî yol haritasına göre *"Globe View is not yet available for MapLibre Native"* — native tarafta globe **yok** (v13 dahil) |
+| Cesium | ⚠️ | — | Apache 2 | Native Android SDK yok (web/Unreal odaklı) |
 | Mapbox | ✅ | Zorunlu + ücretli planlar | Proprietary | Globe erişimi ücretli; API key zorunlu; cache kuralları kısıtlayıcı |
 | Google Maps | ❌ | Zorunlu | Proprietary | Globe görünümü sağlayan halka açık API yok |
-| Mapbox GL JS (WebView) | ✅ | Zorunlu | — | WebView üzerinden 3D render, performans ve batarya açısından kötü |
 
-**Sonuç:** MapLibre GL Native `11.11.0` — ücretsiz, açık kaynak, gerçek globe projeksiyonu, hiçbir API key gerektirmez.
+**Mimari:** 3D globe, `assets/globe/` altındaki MapLibre GL JS 5 sayfasında çalışır; uygulama `WebViewAssetLoader` (https origin) üzerinden yükler ve iki yönlü bir JS köprüsüyle bağlanır:
+- **Kotlin → JS:** katman görünürlüğü, veri besleme (GeoJSON olaylar, harita ızgaraları → renkli hücre poligonları, radar tile URL'i, gündüz/gece poligonu, aurora), kamera uçuşları.
+- **JS → Kotlin:** kamera bbox'ı (viewport tabanlı veri yükleme), harita dokunuşu (lat/lon), olay dokunuşu (deprem/yangın/volkan özellikleri), hata ve hazır bildirimleri.
+
+**Neden raster grid'ler poligon olarak çiziliyor?** MapLibre GL JS'te `ImageSource` bir quad texture'dır ve globe projeksiyonunda kutuplarda dejenere olup "yelpaze" artefaktı üretir. Bu yüzden sıcaklık/bulut/deniz/aurora verileri, hücre başına renklendirilmiş GeoJSON poligonları olarak gönderilir — vektör katmanlar globe'da kusursuz projekte edilir.
 
 ---
 
@@ -73,9 +77,9 @@ gradlew.bat assembleDebug        # Windows
 - Kotlin `2.1.20`, AGP `8.9.2`, KSP `2.1.20-1.0.32`
 - Jetpack Compose BOM `2025.04.01`, Material 3
 - Hilt `2.56.2`, Room `2.7.1`, Retrofit `2.11.0`, Moshi `1.15.2`, WorkManager `2.10.1`, DataStore `1.1.4`
-- MapLibre Android SDK `11.11.0`
+- MapLibre GL JS `5.6.0` (assets içinde, WebView'da globe) + OpenFreeMap vektör tabanı
 
-APK, `app/build/outputs/apk/debug/app-debug.apk` konumuna üretilir (~60 MB, MapLibre native kütüphaneleri dahil).
+APK, `app/build/outputs/apk/debug/app-debug.apk` konumuna üretilir (~20 MB).
 
 ---
 
@@ -92,7 +96,7 @@ APK, `app/build/outputs/apk/debug/app-debug.apk` konumuna üretilir (~60 MB, Map
 | 🌌 Aurora / uzay havası | **NOAA SWPC** — `https://services.swpc.noaa.gov/json/planetary_k_index_1m.json` + `ovation_aurora_latest.json` | ✅ (public domain) | Hayır |
 | 🔍 Arama (şehir/ülke) | **Open-Meteo Geocoding** — `https://geocoding-api.open-meteo.com/v1/search` + Natural Earth ülke GeoJSON'u (gömülü) | ✅ | Hayır |
 | 🤖 AI özeti | **OpenAI uyumlu** (Chat Completions) **veya Gemini** — kullanıcı anahtarıyla | — | **Evet** |
-| 🗺️ Baz haritalar | CARTO dark (varsayılan), Esri World Imagery (uydu), OpenStreetMap (sokak) | ✅ (atıf şart) | Hayır |
+| 🗺️ Baz haritalar | OpenFreeMap (varsayılan), Esri World Imagery (uydu), OpenStreetMap (sokak) | ✅ (atıf şart) | Hayır |
 
 > 🔍 **Not:** FIRMS dışındaki tüm veri kaynakları **hiçbir API key gerektirmez**; uygulama anahtarsız tam çalışır (yangın katmanı "Data unavailable" gösterir).
 
@@ -131,7 +135,7 @@ Anahtar girilmezse uygulama **template fallback** ile çalışır: AI çağrıs�
 | NASA FIRMS | **5000 işlem / 10 dk** (MAP_KEY) | 15 dk TTL cache; günde 1 kez tüm dünya sorgusu (yangınlar "günlük" anlamında) |
 | NOAA SWPC | Kısıtlama yok | 15 dk TTL |
 | AI (OpenAI/Gemini) | Sizin hesabınız | Sadece kullanıcı tetiklediğinde çağrılır |
-| CARTO/Esri/OSM tile | Atıf şartı; tile cache kurallarına uyulur | MapLibre tile cache yalnızca render amaçlı, kalıcı değil |
+| OpenFreeMap/EOX/OSM tile | Atıf şartı; tile cache kurallarına uyulur | MapLibre tile cache yalnızca render amaçlı, kalıcı değil |
 
 ---
 
@@ -151,8 +155,8 @@ Uygulama içi **Data sources** ekranı her katmanın kaynağını, güncelleme s
 
 ## 7. Harita Lisansları
 
-- **Space (varsayılan):** CARTO dark basemap — © OpenStreetMap contributors, © CARTO. Ticari olmayan kullanım için ücretsiz; atıf zorunlu.
-- **Satellite:** Esri World Imagery — © Esri, Maxar, Earthstar Geographics. Atıf zorunlu.
+- **Space (varsayılan):** OpenFreeMap vektör tabanı (keyless) — © OpenFreeMap, © OpenStreetMap contributors. Koyu "uzay" renkleri uygulama içinde tanımlıdır.
+- **Satellite:** EOX Sentinel-2 cloudless 2020 (WMTS, keyless) — atıf: *Sentinel-2 cloudless © EOX*. Alternatif olarak Esri World Imagery yapılandırılabilir.
 - **Streets:** OpenStreetMap raster tile'ları (ODbL).
 - Tile'lar **önbelleğe alınmaz/dağıtılmaz** (yalnızca render için MapLibre cache'i). Harita sağlayıcısı görüntülerinin izinsiz kopyalanması/redistribüsyonu yasaktır.
 
@@ -266,7 +270,7 @@ Release yapılandırması: R8/ProGuard açık (`proguard-rules.pro`), kaynak kü
 - **USGS/NOAA:** Kamu malı (public domain); atıf rica edilir.
 - **Smithsonian GVP:** Katalog kullanımı için atıf zorunlu (DOI: 10.5479/si.GVP.VOTW5-...); ticari kullanım için GVP şartlarını kontrol edin.
 - **Natural Earth:** Public domain.
-- **CARTO/Esri/OSM:** Basemap atıfları ve tile kullanım şartları; tile'ların yeniden dağıtımı yasaktır.
+- **OpenFreeMap/EOX/OSM:** Basemap atıfları ve tile kullanım şartları; tile'ların yeniden dağıtımı yasaktır.
 - Bu proje bir örnek/araçtır; acil durum bilgisi için **yerel resmî otoritelere** başvurun.
 
 ---

@@ -31,7 +31,29 @@ class GridWeatherRepository @Inject constructor(
 ) {
     private val cacheTtlNow = 30 * 60_000L
     private val cacheTtlOther = 4 * 60 * 60_000L
-    private val chunkSize = 40
+
+    /** Up to 150 coordinates per request: fewer requests means fewer 429s. */
+    private val chunkSize = 150
+
+    /** Retry with exponential backoff for rate-limited / transient failures.
+     *  Backoff spans well over a minute so a full per-minute quota window
+     *  can reset between attempts. */
+    private suspend fun <T> withRetry(block: suspend () -> T): T {
+        val delays = longArrayOf(2_000L, 10_000L, 35_000L)
+        var last: Exception? = null
+        repeat(delays.size + 1) { attempt ->
+            try {
+                return block()
+            } catch (e: Exception) {
+                last = e
+                val msg = e.message ?: ""
+                val retryable = msg.contains("429") || msg.contains("50") || e is java.io.IOException
+                if (!retryable || attempt == delays.size) throw e
+                kotlinx.coroutines.delay(delays[attempt])
+            }
+        }
+        throw last ?: IllegalStateException("request failed")
+    }
 
     data class GridRequest(
         val variable: String,
@@ -67,24 +89,39 @@ class GridWeatherRepository @Inject constructor(
         }
 
         val lats = DoubleArray(nLats) { i -> min(85.0, max(-85.0, south + step * i)) }
-        val lons = DoubleArray(nLons) { i -> ((west + step * i + 360.0) % 360.0) }
+        // Open-Meteo expects longitudes in [-180, 180]
+        val lons = DoubleArray(nLons) { i ->
+            var lon = (west + step * i) % 360.0
+            if (lon < -180.0) lon += 360.0
+            if (lon > 180.0) lon -= 360.0
+            lon
+        }
 
         val values = mutableMapOf<Long, Float>()
-        val concurrency = if (req.batterySaver) 4 else 8
+        var hadFailure = false
+        val concurrency = if (req.batterySaver) 2 else 3
         val sem = Semaphore(concurrency)
 
         coroutineScope {
-            val chunks = lats.indices.chunked(chunkSize)
-            val results = chunks.map { latIdxs ->
+            // Chunk over the full lat x lon grid (each request can hold up to
+            // ~60 coordinates; mismatched lat/lon array lengths are rejected).
+            val cells = ArrayList<Pair<Int, Int>>(nLats * nLons)
+            for (li in 0 until nLats) {
+                for (lj in 0 until nLons) {
+                    cells.add(li to lj)
+                }
+            }
+            val results = cells.chunked(chunkSize).map { chunk ->
                 async {
                     sem.withPermit {
                         val samples = mutableListOf<GridSample>()
                         try {
+                            // Small pacing delay to avoid burst rate-limiting.
+                            kotlinx.coroutines.delay(if (req.batterySaver) 800 else 400)
+                            val latStr = chunk.joinToString(",") { lats[it.first].toString() }
+                            val lonStr = chunk.joinToString(",") { lons[it.second].toString() }
                             if (req.isOcean) {
-                                val response = api.gridMarine(
-                                    latitude = latIdxs.joinToString(",") { lats[it].toString() },
-                                    longitude = latIdxs.joinToString(",") { lons[it].toString() }
-                                )
+                                val response = withRetry { api.gridMarine(latitude = latStr, longitude = lonStr) }
                                 for (item in response) {
                                     val lat = item.latitude ?: continue
                                     val lon = item.longitude ?: continue
@@ -93,11 +130,16 @@ class GridWeatherRepository @Inject constructor(
                                     samples += GridSample(lat, lon, v)
                                 }
                             } else {
-                                val response = api.gridForecast(
-                                    latitude = latIdxs.joinToString(",") { lats[it].toString() },
-                                    longitude = latIdxs.joinToString(",") { lons[it].toString() },
-                                    hourly = variable
-                                )
+                                val response = withRetry {
+                                    api.gridForecast(
+                                        latitude = latStr,
+                                        longitude = lonStr,
+                                        hourly = variable
+                                    )
+                                }
+                                if (response.size != chunk.size) {
+                                    android.util.Log.w("EarthNowGrid", "$variable chunk: requested ${chunk.size}, got ${response.size}")
+                                }
                                 for (item in response) {
                                     val lat = item.latitude ?: continue
                                     val lon = item.longitude ?: continue
@@ -108,20 +150,42 @@ class GridWeatherRepository @Inject constructor(
                             }
                         } catch (e: Exception) {
                             // Partial or no data for this chunk; keep others
+                            hadFailure = true
+                            android.util.Log.w("EarthNowGrid", "chunk failed for $variable: ${e.message}")
                         }
-                        latIdxs to samples
+                        samples
                     }
                 }
             }.awaitAll()
 
-            for ((latIdxs, samples) in results) {
+            var dropped = 0
+            var samplesTotal = 0
+            for (samples in results) {
+                samplesTotal += samples.size
                 for (s in samples) {
-                    val latIdx = latIdxs.minByOrNull { abs(lats[it] - s.lat) } ?: continue
-                    val lonIdx = (((s.lon - west + 360.0) % 360.0) / step).toInt()
-                    if (lonIdx !in 0 until nLons) continue
-                    val v = s.value ?: continue
+                    val latIdx = lats.indices.minByOrNull { abs(lats[it] - s.lat) } ?: continue
+                    // Round to the nearest grid column: the API echoes model
+                    // longitudes with tiny float jitter (e.g. 3.0 -> 2.9999),
+                    // and truncation would collapse adjacent columns.
+                    val lonIdx = kotlin.math.round(
+                        (((s.lon - west) % 360.0 + 360.0) % 360.0) / step
+                    ).toInt()
+                    if (lonIdx !in 0 until nLons) {
+                        dropped++
+                        if (dropped <= 3) android.util.Log.w("EarthNowGrid", "drop lon out of range: ${s.lon} -> idx $lonIdx")
+                        continue
+                    }
+                    val v = s.value
+                    if (v == null) {
+                        dropped++
+                        if (dropped <= 3) android.util.Log.w("EarthNowGrid", "drop null value at ${s.lat},${s.lon}")
+                        continue
+                    }
                     values[GridWeather.encode(latIdx, lonIdx)] = v.toFloat()
                 }
+            }
+            if (dropped > 0 || samplesTotal != cells.size) {
+                android.util.Log.d("EarthNowGrid", "$variable: expected ${cells.size} samples, got $samplesTotal, dropped=$dropped, mapped=${values.size}")
             }
         }
 
@@ -137,7 +201,12 @@ class GridWeatherRepository @Inject constructor(
             time = req.timeMillis,
             fetchedAt = System.currentTimeMillis()
         )
-        cache.put(cacheKey, serialize(grid))
+        // Never cache an incomplete grid: a partial or failed fetch must not
+        // be reused for hours (it would render permanent gaps in the layer).
+        if (values.isNotEmpty() && !hadFailure) {
+            cache.put(cacheKey, serialize(grid))
+        }
+        android.util.Log.d("EarthNowGrid", "$variable: ${values.size} values, step=$step, ${nLats}x$nLons grid, failed=$hadFailure")
         return grid
     }
 
@@ -167,11 +236,15 @@ class GridWeatherRepository @Inject constructor(
     private data class GridSample(val lat: Double, val lon: Double, val value: Double?)
 
     private fun adaptiveStep(bbox: Bbox, batterySaver: Boolean): Double {
-        val target = if (batterySaver) 350.0 else 700.0
+        // Keep the total number of sampled locations low: on the free tier
+        // each location counts as an API call, and large multi-location
+        // requests are rate-limited (429/503). ~250 points means at most two
+        // 150-coordinate requests per layer.
+        val target = if (batterySaver) 80.0 else 100.0
         var step = sqrt(bbox.width * bbox.height / target)
         step = max(0.25, step)
-        step = min(10.0, step)
-        return round(step * 4) / 4
+        step = min(25.0, step)
+        return round(step * 2) / 2
     }
 
     private fun buildCacheKey(variable: String, req: GridRequest, step: Double, nLats: Int, nLons: Int): String {

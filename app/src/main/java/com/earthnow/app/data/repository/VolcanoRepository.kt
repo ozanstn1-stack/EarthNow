@@ -43,7 +43,7 @@ class VolcanoRepository @Inject constructor(
         val csv = context.assets.open("volcanoes_gvp_holocene.csv").bufferedReader().use { it.readText() }
         csv.lines().filter { it.isNotBlank() && !it.startsWith("#") }.drop(1).mapNotNull { line ->
             val cols = line.split("|")
-            if (cols.size < 9) return@mapNotNull null
+            if (cols.size < 8) return@mapNotNull null
             val lat = cols[3].toDoubleOrNull() ?: return@mapNotNull null
             val lon = cols[4].toDoubleOrNull() ?: return@mapNotNull null
             Volcano(

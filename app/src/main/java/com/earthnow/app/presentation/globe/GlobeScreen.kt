@@ -85,13 +85,11 @@ import com.earthnow.app.domain.model.Place
 import com.earthnow.app.domain.model.RadarFrame
 import com.earthnow.app.domain.model.WatchRegion
 import com.earthnow.app.map.GlobeController
-import com.earthnow.app.map.RasterRenderer
 import com.earthnow.app.util.ColorRamps
 import com.earthnow.app.util.GeoMath
 import com.earthnow.app.util.TimeFormat
 import com.earthnow.app.util.Units
 import kotlinx.coroutines.launch
-import org.maplibre.android.maps.MapView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -127,17 +125,15 @@ fun GlobeScreen(
     }
 
     Box(Modifier.fillMaxSize()) {
-        // ---- MapView + GlobeController ----
+        // ---- WebView globe (MapLibre GL JS 5, globe projection) ----
         var controller by remember { mutableStateOf<GlobeController?>(null) }
 
         AndroidView(
-            factory = { ctx ->
-                MapView(ctx)
-            },
+            factory = { ctx -> android.webkit.WebView(ctx) },
             modifier = Modifier.fillMaxSize()
-        ) { mv ->
+        ) { wv ->
             if (controller == null) {
-                val c = GlobeController(mv, viewModel, scope)
+                val c = GlobeController(wv, viewModel)
                 controller = c
                 viewModel.attachController(c)
                 c.init()

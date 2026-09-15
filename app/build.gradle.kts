@@ -26,8 +26,8 @@ android {
         applicationId = "com.earthnow.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -107,7 +107,7 @@ dependencies {
 
     implementation(libs.datastore)
     implementation(libs.work.runtime)
-    implementation(libs.maplibre)
+    implementation(libs.androidx.webkit)
     implementation(libs.kotlinx.coroutines.android)
 
     testImplementation(libs.junit)

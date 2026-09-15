@@ -32,7 +32,12 @@ object GeoMath {
 }
 
 data class Bbox(val west: Double, val south: Double, val east: Double, val north: Double) {
-    val width: Double get() = ((east - west) % 360.0 + 360.0) % 360.0
+    /** Longitude span in degrees, correctly handling the full-world and
+     *  anti-meridian cases (west=-180/east=180 must yield 360, not 0). */
+    val width: Double get() {
+        val w = (east - west) % 360.0
+        return if (w <= 0.0) w + 360.0 else w
+    }
     val height: Double get() = (north - south).coerceIn(0.0, 180.0)
     val centerLat: Double get() = (south + north) / 2
     val centerLon: Double get() {

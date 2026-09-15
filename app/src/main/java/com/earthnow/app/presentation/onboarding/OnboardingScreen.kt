@@ -94,7 +94,7 @@ fun OnboardingScreen(
 
     // If onboarding was already completed, skip straight to the globe.
     LaunchedEffect(Unit) {
-        val settings = rootViewModel.settings.first()
+        val settings = rootViewModel.awaitSettings()
         ready = true
         if (settings.onboardingDone) onDone()
     }
