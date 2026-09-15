@@ -14,11 +14,13 @@ interface AiSummaryProvider {
     suspend fun summarize(
         context: LocationContext,
         tempUnit: com.earthnow.app.util.Units.TempUnit,
-        windUnit: com.earthnow.app.util.Units.WindUnit
+        windUnit: com.earthnow.app.util.Units.WindUnit,
+        language: String = "en"
     ): String
     suspend fun askQuestion(
         question: String,
-        dataContext: String
+        dataContext: String,
+        language: String = "en"
     ): String
 }
 

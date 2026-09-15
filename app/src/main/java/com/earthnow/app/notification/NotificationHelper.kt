@@ -26,10 +26,10 @@ class NotificationHelper @Inject constructor(
             val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val channel = NotificationChannel(
                 CHANNEL_EVENTS,
-                "Region watch events",
+                context.getString(R.string.notif_channel),
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = "Significant earthquakes, wildfires, volcanic updates and aurora alerts for watched regions"
+                description = context.getString(R.string.notif_channel_desc)
             }
             nm.createNotificationChannel(channel)
         }

@@ -21,10 +21,49 @@ import kotlin.math.abs
 class GeocodingRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val geocodingApi: OpenMeteoGeocodingApi,
+    private val nominatimApi: com.earthnow.app.data.api.NominatimApi,
     private val volcanoRepository: VolcanoRepository,
+    private val cache: JsonCache,
     private val moshi: Moshi
 ) {
     private var countries: List<CountryFeature>? = null
+
+    data class ReversePlace(val name: String?, val country: String?)
+
+    /**
+     * Reverse geocodes a tapped point to the nearest city/town name using
+     * OpenStreetMap Nominatim (free, no key). Results are cached for 24 h.
+     * Returns a null name when it cannot be resolved.
+     */
+    suspend fun reversePlace(lat: Double, lon: Double): ReversePlace {
+        val key = "rev_${(kotlin.math.round(lat * 100.0) / 100.0)}_${(kotlin.math.round(lon * 100.0) / 100.0)}"
+        cache.getStale(key)?.let { (json, ts) ->
+            if (System.currentTimeMillis() - ts < 24 * 3600_000L) {
+                try {
+                    val dto = moshi.adapter(com.earthnow.app.data.api.NominatimReverseDto::class.java).fromJson(json)
+                    if (dto != null) return ReversePlace(dto.localizedName(), dto.address?.country)
+                } catch (e: Exception) { /* fall through to network */ }
+            }
+        }
+        return try {
+            val language = context.resources.configuration.locales[0].language
+            val dto = nominatimApi.reverse(lat = lat, lon = lon, acceptLanguage = language)
+            cache.put(key, moshi.adapter(com.earthnow.app.data.api.NominatimReverseDto::class.java).toJson(dto))
+            ReversePlace(dto.localizedName(), dto.address?.country)
+        } catch (e: Exception) {
+            ReversePlace(null, null)
+        }
+    }
+
+    private fun com.earthnow.app.data.api.NominatimReverseDto.localizedName(): String? {
+        val a = address
+        return name
+            ?: a?.city
+            ?: a?.town
+            ?: a?.village
+            ?: a?.municipality
+            ?: a?.county
+    }
 
     suspend fun search(query: String, limit: Int = 12): List<Place> {
         val q = query.trim()

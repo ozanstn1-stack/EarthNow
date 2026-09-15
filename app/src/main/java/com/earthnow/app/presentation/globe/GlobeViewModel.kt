@@ -181,12 +181,16 @@ class GlobeViewModel @Inject constructor(
         refreshRasterLayers()
     }
 
-    override fun onMapTap(lat: Double, lon: Double) {
+override fun onMapTap(lat: Double, lon: Double) {
         viewModelScope.launch {
-            val country = runCatching { geocodingRepository.reverse(lat, lon) }.getOrNull()
+            // City-level reverse geocoding (OSM Nominatim); falls back to the
+            // bundled country dataset when offline.
+            val rev = runCatching { geocodingRepository.reversePlace(lat, lon) }.getOrNull()
+            val country = rev?.country
+                ?: runCatching { geocodingRepository.reverse(lat, lon) }.getOrNull()
             val place = Place(
                 id = "tap_${lat.hashCode()}_${lon.hashCode()}",
-                name = country ?: "Selected point",
+                name = rev?.name ?: country ?: "",
                 country = country,
                 lat = lat,
                 lon = lon,

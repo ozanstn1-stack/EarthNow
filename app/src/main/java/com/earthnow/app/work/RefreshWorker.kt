@@ -56,8 +56,17 @@ class RefreshWorker(
                     }
                     big.take(3).forEach { q ->
                         notificationHelper.postEvent(
-                            "🌍 M${"%.1f".format(q.mag ?: 0.0)} earthquake near ${w.name}",
-                            "${q.place} | ${q.depthKm?.toInt() ?: "?"} km depth | ${TimeFormat.ago(q.timeMillis)}"
+                            applicationContext.getString(
+                                com.earthnow.app.R.string.notif_eq_near,
+                                "%.1f".format(q.mag ?: 0.0),
+                                w.name
+                            ),
+                            applicationContext.getString(
+                                com.earthnow.app.R.string.notif_eq_detail,
+                                q.place,
+                                q.depthKm?.toInt() ?: 0,
+                                com.earthnow.app.presentation.localization.TimeAgo.format(applicationContext, q.timeMillis)
+                            )
                         )
                     }
                 }
@@ -67,8 +76,8 @@ class RefreshWorker(
                     }
                     if (near.isNotEmpty()) {
                         notificationHelper.postEvent(
-                            "🔥 Wildfire detections near ${w.name}",
-                            "${near.size} active hotspot(s) reported by NASA FIRMS"
+                            applicationContext.getString(com.earthnow.app.R.string.notif_fire_near, w.name),
+                            applicationContext.getString(com.earthnow.app.R.string.notif_fire_detail, near.size)
                         )
                     }
                 }
@@ -76,8 +85,8 @@ class RefreshWorker(
                     val kp = aurora?.kpIndex
                     if (kp != null && kp >= 5) {
                         notificationHelper.postEvent(
-                            "🌌 High aurora activity (Kp ${"%.1f".format(kp)})",
-                            "Estimated aurora visibility may be elevated near ${w.name}. Check NOAA SWPC for current conditions."
+                            applicationContext.getString(com.earthnow.app.R.string.notif_aurora_title, "%.1f".format(kp)),
+                            applicationContext.getString(com.earthnow.app.R.string.notif_aurora_detail, w.name)
                         )
                     }
                 }

@@ -25,58 +25,51 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import com.earthnow.app.R
 import com.earthnow.app.presentation.root.RootViewModel
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-@Composable
-private fun rememberScope(): kotlinx.coroutines.CoroutineScope {
-    val scope = androidx.compose.runtime.rememberCoroutineScope()
-    return scope
-}
-
 private data class OnboardPage(
-    val title: String,
-    val body: String,
+    val titleRes: Int,
+    val bodyRes: Int,
     val emoji: String,
     val colors: List<Color>
 )
 
 private val pages = listOf(
     OnboardPage(
-        "See the Earth Live",
-        "A real 3D globe of our planet. Spin it, zoom in, and explore what is happening right now anywhere on Earth.",
+        R.string.onb1_title,
+        R.string.onb1_body,
         "🌍",
         listOf(Color(0xFF0C4A6E), Color(0xFF0369A1))
     ),
     OnboardPage(
-        "Live data layers",
-        "Temperature, clouds, wind, precipitation, ocean temperature, earthquakes, wildfires, volcanoes and the aurora — all from real scientific sources.",
+        R.string.onb2_title,
+        R.string.onb2_body,
         "🛰️",
         listOf(Color(0xFF3B2A6B), Color(0xFF6D28D9))
     ),
     OnboardPage(
-        "Ask AI what's happening anywhere",
-        "Tap any point and ask: what's happening here? The AI answers using the real data on your screen — never invented facts.",
+        R.string.onb3_title,
+        R.string.onb3_body,
         "✨",
         listOf(Color(0xFF065F46), Color(0xFF16A34A))
     ),
     OnboardPage(
-        "Explore the world",
-        "Search for cities, countries, volcanoes and oceans. Save favorites, watch regions, and share live snapshots.",
+        R.string.onb4_title,
+        R.string.onb4_body,
         "🚀",
         listOf(Color(0xFF7C2D12), Color(0xFFEA580C))
     )
@@ -87,7 +80,7 @@ fun OnboardingScreen(
     onDone: () -> Unit,
     rootViewModel: RootViewModel = hiltViewModel()
 ) {
-    var page by remember { mutableIntStateOf(0) }
+    var page by rememberSaveable { mutableIntStateOf(0) }
     var ready by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val p = pages[page]
@@ -127,14 +120,14 @@ fun OnboardingScreen(
             }
             Spacer(Modifier.height(40.dp))
             Text(
-                p.title,
+                stringResource(p.titleRes),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(14.dp))
             Text(
-                p.body,
+                stringResource(p.bodyRes),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -167,17 +160,21 @@ fun OnboardingScreen(
                     .height(52.dp),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Text(if (page < pages.lastIndex) "Next" else "Start exploring", fontWeight = FontWeight.Bold)
+                Text(
+                    if (page < pages.lastIndex) stringResource(R.string.onb_next)
+                    else stringResource(R.string.onb_start),
+                    fontWeight = FontWeight.Bold
+                )
             }
             if (page > 0) {
                 Spacer(Modifier.height(8.dp))
-                TextButton(onClick = { page-- }) { Text("Back") }
+                TextButton(onClick = { page-- }) { Text(stringResource(R.string.onb_back)) }
             }
             if (page == pages.lastIndex) {
                 Spacer(Modifier.height(8.dp))
                 TextButton(onClick = {
                     scope.launch { rootViewModel.markOnboardingDone(); onDone() }
-                }) { Text("Skip") }
+                }) { Text(stringResource(R.string.onb_skip)) }
             }
         }
     }

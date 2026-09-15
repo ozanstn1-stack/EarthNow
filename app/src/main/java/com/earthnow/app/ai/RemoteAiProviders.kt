@@ -24,14 +24,15 @@ class OpenAiProvider @Inject constructor(
     override suspend fun summarize(
         context: LocationContext,
         tempUnit: com.earthnow.app.util.Units.TempUnit,
-        windUnit: com.earthnow.app.util.Units.WindUnit
+        windUnit: com.earthnow.app.util.Units.WindUnit,
+        language: String
     ): String {
-        val payload = AiPromptBuilder.summaryPayload(context, tempUnit, windUnit)
-        return chat(AiPromptBuilder.summarySystemPrompt(), payload)
+        val payload = AiPromptBuilder.summaryPayload(context, tempUnit, windUnit, language)
+        return chat(AiPromptBuilder.summarySystemPrompt(language), payload)
     }
 
-    override suspend fun askQuestion(question: String, dataContext: String): String =
-        chat(AiPromptBuilder.questionSystemPrompt(), AiPromptBuilder.questionPayload(question, dataContext))
+    override suspend fun askQuestion(question: String, dataContext: String, language: String): String =
+        chat(AiPromptBuilder.questionSystemPrompt(language), AiPromptBuilder.questionPayload(question, dataContext))
 
     private suspend fun chat(system: String, user: String): String {
         val resp = api.chat(
@@ -61,14 +62,15 @@ class GeminiProvider @Inject constructor(
     override suspend fun summarize(
         context: LocationContext,
         tempUnit: com.earthnow.app.util.Units.TempUnit,
-        windUnit: com.earthnow.app.util.Units.WindUnit
+        windUnit: com.earthnow.app.util.Units.WindUnit,
+        language: String
     ): String {
-        val payload = AiPromptBuilder.summaryPayload(context, tempUnit, windUnit)
-        return generate(AiPromptBuilder.summarySystemPrompt(), payload)
+        val payload = AiPromptBuilder.summaryPayload(context, tempUnit, windUnit, language)
+        return generate(AiPromptBuilder.summarySystemPrompt(language), payload)
     }
 
-    override suspend fun askQuestion(question: String, dataContext: String): String =
-        generate(AiPromptBuilder.questionSystemPrompt(), AiPromptBuilder.questionPayload(question, dataContext))
+    override suspend fun askQuestion(question: String, dataContext: String, language: String): String =
+        generate(AiPromptBuilder.questionSystemPrompt(language), AiPromptBuilder.questionPayload(question, dataContext))
 
     private suspend fun generate(system: String, user: String): String {
         if (apiKey.isBlank()) throw IllegalStateException("Gemini API key not configured")

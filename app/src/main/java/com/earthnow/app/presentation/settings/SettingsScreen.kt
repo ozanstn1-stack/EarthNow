@@ -28,10 +28,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.earthnow.app.R
 import com.earthnow.app.util.Units
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,9 +48,11 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.settings_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") }
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back))
+                    }
                 }
             )
         }
@@ -60,41 +64,66 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-            SettingHeader("Appearance")
-            SettingGroup("Theme") {
-                RadioGroup(listOf("dark" to "Dark (default)", "light" to "Light", "system" to "System"),
-                    s.themeMode) { viewModel.setTheme(it) }
+            SettingHeader(stringResource(R.string.settings_appearance))
+            SettingGroup(stringResource(R.string.settings_theme)) {
+                RadioGroup(
+                    listOf(
+                        "dark" to stringResource(R.string.theme_dark),
+                        "light" to stringResource(R.string.theme_light),
+                        "system" to stringResource(R.string.theme_system)
+                    ),
+                    s.themeMode
+                ) { viewModel.setTheme(it) }
             }
-            SettingGroup("Default map style") {
-                RadioGroup(listOf("space" to "Space (dark globe)", "satellite" to "Satellite", "streets" to "Streets"),
-                    s.mapStyle) { viewModel.setMapStyle(it) }
+            SettingGroup(stringResource(R.string.settings_language)) {
+                RadioGroup(
+                    listOf(
+                        "system" to stringResource(R.string.language_system),
+                        "en" to stringResource(R.string.language_english),
+                        "tr" to stringResource(R.string.language_turkish)
+                    ),
+                    s.languageMode
+                ) { viewModel.setLanguage(it) }
+            }
+            SettingGroup(stringResource(R.string.settings_map_style)) {
+                RadioGroup(
+                    listOf(
+                        "space" to stringResource(R.string.map_space),
+                        "satellite" to stringResource(R.string.map_satellite),
+                        "streets" to stringResource(R.string.map_streets)
+                    ),
+                    s.mapStyle
+                ) { viewModel.setMapStyle(it) }
             }
 
-            SettingHeader("Units")
-            SettingGroup("Temperature") {
+            SettingHeader(stringResource(R.string.settings_units))
+            SettingGroup(stringResource(R.string.units_temperature)) {
                 RadioGroup(listOf("CELSIUS" to "°C", "FAHRENHEIT" to "°F"), s.tempUnit.name) {
                     viewModel.setTempUnit(Units.TempUnit.valueOf(it))
                 }
             }
-            SettingGroup("Wind") {
+            SettingGroup(stringResource(R.string.units_wind)) {
                 RadioGroup(listOf("KMH" to "km/h", "MPH" to "mph", "KNOTS" to "knots"), s.windUnit.name) {
                     viewModel.setWindUnit(Units.WindUnit.valueOf(it))
                 }
             }
-            SettingGroup("Pressure") {
+            SettingGroup(stringResource(R.string.units_pressure)) {
                 RadioGroup(listOf("HPA" to "hPa", "INHG" to "inHg"), s.pressureUnit.name) {
                     viewModel.setPressureUnit(Units.PressureUnit.valueOf(it))
                 }
             }
-            SettingGroup("Distance") {
+            SettingGroup(stringResource(R.string.units_distance)) {
                 RadioGroup(listOf("KM" to "km", "MILES" to "miles"), s.distUnit.name) {
                     viewModel.setDistUnit(Units.DistUnit.valueOf(it))
                 }
             }
 
-            SettingHeader("Data & battery")
-            SettingGroup("Data refresh interval") {
-                Text("${s.refreshMinutes} min", style = MaterialTheme.typography.bodyMedium)
+            SettingHeader(stringResource(R.string.settings_data))
+            SettingGroup(stringResource(R.string.settings_refresh)) {
+                Text(
+                    stringResource(R.string.refresh_minutes, s.refreshMinutes),
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Slider(
                     value = s.refreshMinutes.toFloat(),
                     onValueChange = { viewModel.setRefresh(it.toInt()) },
@@ -102,53 +131,84 @@ fun SettingsScreen(
                     steps = 22
                 )
             }
-            ToggleRow("Battery saver", "Lower resolution grids, fewer parallel requests, less frequent refresh", s.batterySaver) {
-                viewModel.setBatterySaver(it)
+            ToggleRow(
+                stringResource(R.string.settings_battery_saver),
+                stringResource(R.string.settings_battery_sub),
+                s.batterySaver
+            ) { viewModel.setBatterySaver(it) }
+
+            SettingHeader(stringResource(R.string.settings_ai))
+            ToggleRow(
+                stringResource(R.string.settings_ai_features),
+                stringResource(R.string.settings_ai_features_sub),
+                s.aiEnabled
+            ) { viewModel.setAiEnabled(it) }
+            SettingGroup(stringResource(R.string.settings_ai_provider)) {
+                RadioGroup(
+                    listOf(
+                        "auto" to stringResource(R.string.ai_auto),
+                        "openai" to stringResource(R.string.ai_openai),
+                        "gemini" to stringResource(R.string.ai_gemini),
+                        "template" to stringResource(R.string.ai_template)
+                    ),
+                    s.aiProvider
+                ) { viewModel.setAiProvider(it) }
             }
 
-            SettingHeader("AI")
-            ToggleRow("AI features", "Summaries and answers from an AI provider", s.aiEnabled) {
-                viewModel.setAiEnabled(it)
-            }
-            SettingGroup("AI provider") {
-                RadioGroup(listOf("auto" to "Auto (first configured)", "openai" to "OpenAI-compatible", "gemini" to "Gemini", "template" to "Local template (no key)"),
-                    s.aiProvider) { viewModel.setAiProvider(it) }
-            }
-
-            SettingHeader("Notifications")
-            ToggleRow("Enable notifications", "Event alerts for watched regions (default off)", s.notificationPrefs.enabled) {
-                viewModel.setNotificationPrefs(s.notificationPrefs.copy(enabled = it))
-            }
+            SettingHeader(stringResource(R.string.settings_notifications))
+            ToggleRow(
+                stringResource(R.string.settings_notif_enable),
+                stringResource(R.string.settings_notif_enable_sub),
+                s.notificationPrefs.enabled
+            ) { viewModel.setNotificationPrefs(s.notificationPrefs.copy(enabled = it)) }
             if (s.notificationPrefs.enabled) {
-                ToggleRow("Earthquake ≥ threshold", "Alert for quakes above magnitude", s.notificationPrefs.earthquakeMinMag <= 4.5) {
-                    viewModel.setNotificationPrefs(s.notificationPrefs.copy(earthquakeMinMag = if (it) 4.5 else 6.0))
-                }
-                ToggleRow("Wildfire nearby", "Alert when fires are detected in watched regions", s.notificationPrefs.wildfire) {
-                    viewModel.setNotificationPrefs(s.notificationPrefs.copy(wildfire = it))
-                }
-                ToggleRow("Volcanic activity", "Alerts from the GVP catalog updates", s.notificationPrefs.volcano) {
-                    viewModel.setNotificationPrefs(s.notificationPrefs.copy(volcano = it))
-                }
-                ToggleRow("Aurora high", "Alert when Kp ≥ 5", s.notificationPrefs.auroraHigh) {
-                    viewModel.setNotificationPrefs(s.notificationPrefs.copy(auroraHigh = it))
-                }
+                ToggleRow(
+                    stringResource(R.string.settings_notif_eq),
+                    stringResource(R.string.settings_notif_eq_sub),
+                    s.notificationPrefs.earthquakeMinMag <= 4.5
+                ) { viewModel.setNotificationPrefs(s.notificationPrefs.copy(earthquakeMinMag = if (it) 4.5 else 6.0)) }
+                ToggleRow(
+                    stringResource(R.string.settings_notif_fire),
+                    stringResource(R.string.settings_notif_fire_sub),
+                    s.notificationPrefs.wildfire
+                ) { viewModel.setNotificationPrefs(s.notificationPrefs.copy(wildfire = it)) }
+                ToggleRow(
+                    stringResource(R.string.settings_notif_volcano),
+                    stringResource(R.string.settings_notif_volcano_sub),
+                    s.notificationPrefs.volcano
+                ) { viewModel.setNotificationPrefs(s.notificationPrefs.copy(volcano = it)) }
+                ToggleRow(
+                    stringResource(R.string.settings_notif_aurora),
+                    stringResource(R.string.settings_notif_aurora_sub),
+                    s.notificationPrefs.auroraHigh
+                ) { viewModel.setNotificationPrefs(s.notificationPrefs.copy(auroraHigh = it)) }
             }
 
-            SettingHeader("Storage")
-            ToggleRow("Live mode uses more battery", "Shown as a one-time note — keep enabled", true) {}
+            SettingHeader(stringResource(R.string.settings_storage))
+            ToggleRow(
+                stringResource(R.string.settings_live_note),
+                stringResource(R.string.settings_live_note_sub),
+                true
+            ) {}
             Row(
                 Modifier
                     .fillMaxWidth()
                     .clickable { viewModel.clearCache() }
                     .padding(vertical = 14.dp)
             ) {
-                Text("Clear search history & cache", style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.error)
+                Text(
+                    stringResource(R.string.settings_clear_cache),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
 
-            SettingHeader("About")
-            Text("Earth Now v1.0.0 — live Earth explorer.\nData sources: Open-Meteo, USGS, NOAA SWPC, NASA FIRMS, RainViewer, Smithsonian GVP, Natural Earth.\nBasemaps: © OpenStreetMap contributors, © CARTO, © Esri.",
-                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            SettingHeader(stringResource(R.string.settings_about))
+            Text(
+                stringResource(R.string.settings_about_text),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             Spacer(Modifier.padding(bottom = 24.dp))
         }
     }

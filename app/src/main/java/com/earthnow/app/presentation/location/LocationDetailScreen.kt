@@ -29,7 +29,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -44,14 +43,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.earthnow.app.R
+import com.earthnow.app.domain.model.WmoCodes
+import com.earthnow.app.presentation.globe.DailyForecastStrip
 import com.earthnow.app.presentation.globe.KeyValueRow
 import com.earthnow.app.presentation.globe.SectionCard
 import com.earthnow.app.presentation.globe.StatChip
+import com.earthnow.app.presentation.localization.relativeTime
+import com.earthnow.app.presentation.localization.weatherCodeText
 import com.earthnow.app.util.GeoMath
+import com.earthnow.app.util.SunMoon
 import com.earthnow.app.util.TimeFormat
 import com.earthnow.app.util.Units
 
@@ -74,42 +80,59 @@ fun LocationDetailScreen(
             TopAppBar(
                 title = {
                     Column {
-                        Text(name.ifBlank { "Location" }, fontWeight = FontWeight.Bold)
+                        Text(
+                            name.ifBlank { stringResource(R.string.selected_point) },
+                            fontWeight = FontWeight.Bold
+                        )
                         if (country.isNotBlank()) {
-                            Text(country, style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(
+                                country,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") }
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back))
+                    }
                 },
                 actions = {
                     IconButton(onClick = { viewModel.toggleFavorite() }) {
                         Icon(
                             if (ui.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            "Favorite",
+                            stringResource(R.string.favorite),
                             tint = if (ui.isFavorite) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    IconButton(onClick = { viewModel.addWatch() }) { Icon(Icons.Default.Notifications, "Watch region") }
-                    IconButton(onClick = { viewModel.refresh() }) { Icon(Icons.Default.Refresh, "Refresh") }
+                    IconButton(onClick = { viewModel.addWatch() }) {
+                        Icon(Icons.Default.Notifications, stringResource(R.string.watch_region))
+                    }
+                    IconButton(onClick = { viewModel.refresh() }) {
+                        Icon(Icons.Default.Refresh, stringResource(R.string.refresh_data))
+                    }
                     IconButton(onClick = {
+                        val shareTitle = context.getString(R.string.share)
                         val send = Intent.createChooser(
                             Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
                                 putExtra(Intent.EXTRA_TEXT, viewModel.shareText())
                             },
-                            "Share Earth Now snapshot"
+                            shareTitle
                         )
                         context.startActivity(send)
-                    }) { Icon(Icons.Default.Share, "Share") }
+                    }) { Icon(Icons.Default.Share, stringResource(R.string.share)) }
                 }
             )
         }
     ) { padding ->
         if (ui.loading) {
-            Column(Modifier.fillMaxSize().padding(padding), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            Column(
+                Modifier.fillMaxSize().padding(padding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
                 CircularProgressIndicator()
             }
         } else {
@@ -131,53 +154,110 @@ fun LocationDetailScreen(
                     val w = ctx.weather
 
                     // Current conditions
-                    SectionCard("Current conditions") {
-                        w?.let {
+                    SectionCard(stringResource(R.string.current_conditions)) {
+                        if (w != null) {
                             Text(
-                                Units.tempLabel(it.temperatureC ?: Double.NaN, Units.TempUnit.CELSIUS),
+                                Units.tempLabel(w.temperatureC ?: Double.NaN, Units.TempUnit.CELSIUS),
                                 style = MaterialTheme.typography.displayLarge,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                "${it.codeEmoji() ?: ""} ${it.codeText() ?: ""} · Feels like ${it.feelsLikeC?.let { t -> Units.tempLabel(t, Units.TempUnit.CELSIUS) } ?: "n/a"}",
+                                "${w.codeEmoji() ?: ""} ${weatherCodeText(w.weatherCode)} · " +
+                                    stringResource(
+                                        R.string.feels_like,
+                                        w.feelsLikeC?.let { t -> Units.tempLabel(t, Units.TempUnit.CELSIUS) }
+                                            ?: stringResource(R.string.not_available)
+                                    ),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(Modifier.height(14.dp))
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                StatChip("💧", "Humidity", "${it.humidity?.toInt() ?: "?"}%", Modifier.weight(1f))
-                                StatChip("🌬️", "Wind", it.windSpeedKmh?.let { s -> Units.windLabel(s, Units.WindUnit.KMH) } ?: "n/a", Modifier.weight(1f))
+                                StatChip(
+                                    "💧", stringResource(R.string.humidity),
+                                    "${w.humidity?.toInt() ?: "?"}%", Modifier.weight(1f)
+                                )
+                                StatChip(
+                                    "🌬️", stringResource(R.string.wind_label),
+                                    w.windSpeedKmh?.let { s -> Units.windLabel(s, Units.WindUnit.KMH) }
+                                        ?: stringResource(R.string.not_available),
+                                    Modifier.weight(1f)
+                                )
                             }
                             Spacer(Modifier.height(8.dp))
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                StatChip("📊", "Pressure", it.pressureHpa?.let { p -> Units.pressure(p, Units.PressureUnit.HPA) } ?: "n/a", Modifier.weight(1f))
-                                StatChip("🌧️", "Rain prob.", "${it.rainProbability?.toInt() ?: 0}%", Modifier.weight(1f))
+                                StatChip(
+                                    "📊", stringResource(R.string.pressure),
+                                    w.pressureHpa?.let { p -> Units.pressure(p, Units.PressureUnit.HPA) }
+                                        ?: stringResource(R.string.not_available),
+                                    Modifier.weight(1f)
+                                )
+                                StatChip(
+                                    "🌧️", stringResource(R.string.rain_probability),
+                                    "${w.rainProbability?.toInt() ?: 0}%", Modifier.weight(1f)
+                                )
                             }
-                            it.windDirectionDeg?.let { dir ->
+                            w.windDirectionDeg?.let { dir ->
                                 Spacer(Modifier.height(8.dp))
-                                Text("Wind direction ${GeoMath.compassDirection(dir)} (${dir.toInt()}°) · Gusts ${it.windGustsKmh?.let { g -> Units.windLabel(g, Units.WindUnit.KMH) } ?: "n/a"}",
-                                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(
+                                    stringResource(
+                                        R.string.wind_direction_line,
+                                        GeoMath.compassDirection(dir),
+                                        dir.toInt(),
+                                        w.windGustsKmh?.let { g -> Units.windLabel(g, Units.WindUnit.KMH) }
+                                            ?: stringResource(R.string.not_available)
+                                    ),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
                             Spacer(Modifier.height(8.dp))
-                            Text("Updated ${TimeFormat.ago(it.fetchedAt)} · Source: Open-Meteo",
-                                style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        } ?: Text("Weather data unavailable.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(
+                                stringResource(R.string.data_updated, relativeTime(w.fetchedAt)) +
+                                    " · " + stringResource(R.string.detail_weather_source),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        } else {
+                            Text(
+                                stringResource(R.string.weather_unavailable),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                     Spacer(Modifier.height(12.dp))
 
+                    // 10-day forecast
+                    val daily = w?.daily.orEmpty()
+                    if (daily.isNotEmpty()) {
+                        SectionCard(stringResource(R.string.daily_forecast)) {
+                            DailyForecastStrip(days = daily, tempUnit = Units.TempUnit.CELSIUS)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                    }
+
                     // Hourly forecast chart
                     if ((w?.hourly?.size ?: 0) > 0) {
-                        SectionCard("Hourly forecast") {
+                        SectionCard(stringResource(R.string.hourly_forecast)) {
                             HourlyChart(w!!.hourly.take(24))
                             Spacer(Modifier.height(8.dp))
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                 w.hourly.take(8).forEach { h ->
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                        Text(TimeFormat.hhmm(h.time), style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                        Text("${h.temperatureC?.toInt() ?: "?"}°", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
-                                        Text(h.weatherCode?.let { com.earthnow.app.domain.model.WmoCodes.emoji(it) } ?: "·",
-                                            style = MaterialTheme.typography.bodySmall)
+                                        Text(
+                                            TimeFormat.hhmm(h.time),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        Text(
+                                            "${h.temperatureC?.toInt() ?: "?"}°",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                        Text(
+                                            h.weatherCode?.let { WmoCodes.emoji(it) } ?: "·",
+                                            style = MaterialTheme.typography.bodySmall
+                                        )
                                     }
                                 }
                             }
@@ -186,27 +266,32 @@ fun LocationDetailScreen(
                     }
 
                     // Sun & Moon
-                    SectionCard("Sun & Moon") {
+                    SectionCard(stringResource(R.string.sun_moon)) {
                         val today = w?.daily?.firstOrNull()
                         if (today != null) {
-                            KeyValueRow("Sunrise", today.sunrise?.let { TimeFormat.hhmmZ(it) } ?: "n/a")
-                            KeyValueRow("Sunset", today.sunset?.let { TimeFormat.hhmmZ(it) } ?: "n/a")
-                            KeyValueRow("Moonrise", today.moonrise?.let { TimeFormat.hhmmZ(it) } ?: "n/a")
-                            KeyValueRow("Moonset", today.moonset?.let { TimeFormat.hhmmZ(it) } ?: "n/a")
+                            KeyValueRow(stringResource(R.string.sunrise), today.sunrise?.let { TimeFormat.hhmmZ(it) } ?: stringResource(R.string.not_available))
+                            KeyValueRow(stringResource(R.string.sunset), today.sunset?.let { TimeFormat.hhmmZ(it) } ?: stringResource(R.string.not_available))
+                            KeyValueRow(stringResource(R.string.moonrise), today.moonrise?.let { TimeFormat.hhmmZ(it) } ?: stringResource(R.string.not_available))
+                            KeyValueRow(stringResource(R.string.moonset), today.moonset?.let { TimeFormat.hhmmZ(it) } ?: stringResource(R.string.not_available))
                             today.moonPhase?.let {
-                                KeyValueRow("Moon phase", com.earthnow.app.util.SunMoon.moonPhaseName(it))
+                                KeyValueRow(stringResource(R.string.moon_phase), SunMoon.moonPhaseName(it))
                             }
                         } else {
-                            Text("Sun & moon data unavailable.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(
+                                stringResource(R.string.sun_moon_unavailable),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                     Spacer(Modifier.height(12.dp))
 
                     // Events feed
-                    SectionCard("Event feed") {
+                    SectionCard(stringResource(R.string.event_feed)) {
                         if (ui.events.isEmpty()) {
-                            Text("No significant events reported near this location.",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(
+                                stringResource(R.string.no_events_nearby),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                         ui.events.take(10).forEach { ev ->
                             Row(Modifier.fillMaxWidth().padding(vertical = 5.dp), verticalAlignment = Alignment.Top) {
@@ -214,30 +299,46 @@ fun LocationDetailScreen(
                                 Spacer(Modifier.width(10.dp))
                                 Column(Modifier.weight(1f)) {
                                     Text(ev.title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
-                                    Text(ev.detail, style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    Text(
+                                        ev.detail,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
                                     ev.timeMillis?.let {
-                                        Text(TimeFormat.ago(it), style = MaterialTheme.typography.labelSmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        Text(
+                                            relativeTime(it),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
                                     }
                                 }
                             }
                         }
-                        Text("Only verified events from official sources are shown.",
-                            style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            stringResource(R.string.only_verified_events),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                     Spacer(Modifier.height(12.dp))
 
                     // AI summary
-                    SectionCard("AI summary") {
-                        Button(onClick = { viewModel.generateSummary() }, enabled = !ui.aiLoading, modifier = Modifier.fillMaxWidth()) {
+                    SectionCard(stringResource(R.string.ai_summary)) {
+                        Button(
+                            onClick = { viewModel.generateSummary() },
+                            enabled = !ui.aiLoading,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
                             if (ui.aiLoading) {
-                                CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
+                                CircularProgressIndicator(
+                                    Modifier.size(18.dp), strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.onPrimary
+                                )
                                 Spacer(Modifier.width(8.dp))
                             }
                             Icon(Icons.Default.AutoAwesome, null, Modifier.size(18.dp))
                             Spacer(Modifier.width(8.dp))
-                            Text("What's happening here?")
+                            Text(stringResource(R.string.whats_happening))
                         }
                         ui.aiSummary?.let {
                             Spacer(Modifier.height(10.dp))
@@ -249,7 +350,8 @@ fun LocationDetailScreen(
                             Spacer(Modifier.height(8.dp))
                             Surface(
                                 shape = MaterialTheme.shapes.medium,
-                                color = if (msg.role == "user") MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+                                color = if (msg.role == "user") MaterialTheme.colorScheme.primaryContainer
+                                else MaterialTheme.colorScheme.surfaceVariant
                             ) {
                                 Text(msg.content, Modifier.padding(12.dp))
                             }
@@ -263,26 +365,24 @@ fun LocationDetailScreen(
                             value = aiQuestion,
                             onValueChange = { aiQuestion = it },
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("Ask about this location (e.g. \"What does this mean?\")") },
+                            placeholder = { Text(stringResource(R.string.ask_hint)) },
                             trailingIcon = {
                                 IconButton(onClick = {
                                     if (aiQuestion.isNotBlank()) { viewModel.askAi(aiQuestion.trim()); aiQuestion = "" }
-                                }) { Icon(Icons.AutoMirrored.Filled.Send, "Ask") }
+                                }) { Icon(Icons.AutoMirrored.Filled.Send, stringResource(R.string.ask_send)) }
                             }
                         )
                     }
                     Spacer(Modifier.height(12.dp))
 
                     // Data sources
-                    SectionCard("Data sources") {
-                        listOf(
-                            "Weather" to "Open-Meteo · updated hourly",
-                            "Earthquakes" to "USGS · continuous feed",
-                            "Wildfires" to "NASA FIRMS · near real-time",
-                            "Volcanoes" to "Smithsonian GVP · static catalog",
-                            "Aurora" to "NOAA SWPC · every ~30 min",
-                            "Radar" to "RainViewer · every 10 min"
-                        ).forEach { (k, v) -> KeyValueRow(k, v) }
+                    SectionCard(stringResource(R.string.data_sources_section)) {
+                        KeyValueRow("Weather", stringResource(R.string.detail_weather_source))
+                        KeyValueRow("Earthquakes", stringResource(R.string.detail_eq_source))
+                        KeyValueRow("Wildfires", stringResource(R.string.detail_fire_source))
+                        KeyValueRow("Volcanoes", stringResource(R.string.detail_volcano_source))
+                        KeyValueRow("Aurora", stringResource(R.string.detail_aurora_source))
+                        KeyValueRow("Radar", stringResource(R.string.detail_radar_source))
                     }
                     Spacer(Modifier.height(24.dp))
                 }

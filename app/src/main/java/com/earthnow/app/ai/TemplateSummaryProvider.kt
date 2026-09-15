@@ -18,8 +18,9 @@ class TemplateSummaryProvider @Inject constructor() : AiSummaryProvider {
     override suspend fun summarize(
         context: LocationContext,
         tempUnit: com.earthnow.app.util.Units.TempUnit,
-        windUnit: com.earthnow.app.util.Units.WindUnit
-    ): String {
+        windUnit: com.earthnow.app.util.Units.WindUnit,
+        language: String
+    ): String { if (language == "tr") return summarizeTr(context, tempUnit, windUnit)
         val w = context.weather
         val aurora = context.aurora
         val kp = aurora?.kpIndex
@@ -48,7 +49,39 @@ class TemplateSummaryProvider @Inject constructor() : AiSummaryProvider {
         return sb.toString()
     }
 
-    override suspend fun askQuestion(question: String, dataContext: String): String =
+    private fun summarizeTr(
+        context: LocationContext,
+        tempUnit: com.earthnow.app.util.Units.TempUnit,
+        windUnit: com.earthnow.app.util.Units.WindUnit
+    ): String {
+        val w = context.weather
+        val kp = context.aurora?.kpIndex
+        val sb = StringBuilder()
+        sb.append("${context.place.name} için mevcut koşullar")
+        if (!context.place.country.isNullOrBlank()) sb.append(", ${context.place.country}")
+        sb.append(":\n")
+        w?.let {
+            sb.append("Sıcaklık ${it.temperatureC?.let { t -> com.earthnow.app.util.Units.tempLabel(t, tempUnit) } ?: "veri yok"}")
+            sb.append(" · Rüzgâr ${it.windSpeedKmh?.let { s -> com.earthnow.app.util.Units.windLabel(s, windUnit) } ?: "veri yok"}")
+            if (it.windDirectionDeg != null) sb.append(" (${com.earthnow.app.util.GeoMath.compassDirection(it.windDirectionDeg)})")
+            sb.append("\nBulutluluk ${it.cloudCover?.let { c -> "${c.toInt()}%" } ?: "veri yok"}")
+            sb.append(" · Yağış olasılığı ${it.rainProbability?.let { r -> "${r.toInt()}%" } ?: "veri yok"}\n")
+        }
+        sb.append("Bugün 1500 km içinde deprem sayısı: ${context.earthquakesTodayCount}\n")
+        sb.append("Yakında tespit edilen yangın sayısı: ${context.wildfires.size}\n")
+        if (context.volcanoesNearby.isNotEmpty()) {
+            sb.append("Yakındaki volkanlar (GVP statik katalog): ${context.volcanoesNearby.joinToString { it.name }}\n")
+        } else {
+            sb.append("GVP kataloğunda yakında volkan yok.\n")
+        }
+        sb.append("Aurora: Kp ${kp?.let { "%.1f".format(it) } ?: "veri yok"}")
+        sb.append(" — tahmini görünürlük: ${when { kp == null -> "bilinmiyor"; kp >= 5 -> "yüksek"; kp >= 3 -> "orta"; else -> "düşük" }}\n")
+        if (context.oceanTemp != null) sb.append("Yakındaki deniz yüzeyi sıcaklığı: ${context.oceanTemp}°C\n")
+        sb.append("\nBu özet canlı veri kaynaklarından üretilmiştir. Güvenlik bilgisi için yerel resmî makamlara ve acil servislere başvurun.")
+        return sb.toString()
+    }
+
+    override suspend fun askQuestion(question: String, dataContext: String, language: String): String =
         "AI is not configured in this build, so I can only answer from the data shown in the app. " +
             "The current structured data for this location is:\n\n$dataContext\n\n" +
             "For safety guidance, always check your local official authorities and emergency services."

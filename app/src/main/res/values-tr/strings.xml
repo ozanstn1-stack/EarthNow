@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Earth Now</string>
+
+    <!-- Globe controls -->
+    <string name="search_places">Yer ara</string>
+    <string name="data_timeline">Zaman çizelgesi</string>
+    <string name="data_layers">Veri katmanları</string>
+    <string name="more_options">Diğer seçenekler</string>
+    <string name="locate_me">Konumumu bul</string>
+    <string name="refresh_data">Verileri yenile</string>
+    <string name="menu_favorites">Favoriler</string>
+    <string name="menu_watch">Bölge takibi</string>
+    <string name="menu_data_sources">Veri kaynakları</string>
+    <string name="menu_settings">Ayarlar</string>
+    <string name="offline_banner">Çevrimdışı — son bilinen veriler gösteriliyor</string>
+    <string name="offline_chip">Çevrimdışı</string>
+    <string name="selected_point">Seçilen nokta</string>
+
+    <!-- Layers -->
+    <string name="layers_title">Katmanlar</string>
+    <string name="layers_hint">Dünya üzerindeki canlı veri katmanlarını açıp kapatmak için dokunun.</string>
+    <string name="layer_temperature">Sıcaklık</string>
+    <string name="layer_precipitation">Yağış</string>
+    <string name="layer_clouds">Bulutluluk</string>
+    <string name="layer_wind">Rüzgâr</string>
+    <string name="layer_ocean">Deniz Sıcaklığı</string>
+    <string name="layer_wildfires">Orman Yangınları</string>
+    <string name="layer_earthquakes">Depremler</string>
+    <string name="layer_volcanoes">Volkanlar</string>
+    <string name="layer_aurora">Aurora</string>
+    <string name="layer_daynight">Gündüz / Gece</string>
+    <string name="updated_ago">Güncellendi: %1$s</string>
+    <string name="performance_note">Performans notu: %1$d raster katmanı aktif. Önerilen kombinasyonlar: Sıcaklık + Rüzgâr + Bulutluluk veya Depremler + Volkanlar.</string>
+    <string name="close_layers_panel">Katman panelini kapat</string>
+
+    <!-- Search -->
+    <string name="search_hint">Ara: şehir, ülke, volkan, okyanus…</string>
+    <string name="recent_places">Son arananlar</string>
+    <string name="clear">Temizle</string>
+    <string name="no_results">Sonuç yok. İpucu: şehir adı, ülke, volkan (örn. Etna) veya okyanus arayın.</string>
+    <string name="close_search">Aramayı kapat</string>
+
+    <!-- Selected place sheet -->
+    <string name="favorite">Favori</string>
+    <string name="data_updated">Veriler güncellendi: %1$s</string>
+    <string name="temp_label">Sıcaklık</string>
+    <string name="wind_label">Rüzgâr</string>
+    <string name="clouds_label">Bulut</string>
+    <string name="rain_label">Yağış</string>
+    <string name="earthquakes_today">Bugünkü depremler</string>
+    <string name="wildfires_nearby">Yakındaki yangınlar</string>
+    <string name="volcanoes_nearby">GVP kataloğunda %1$d</string>
+    <string name="aurora_kp_fmt">Kp %1$s · %2$s</string>
+    <string name="aurora_high">Yüksek</string>
+    <string name="aurora_moderate">Orta</string>
+    <string name="aurora_low">Düşük</string>
+    <string name="unavailable">veri yok</string>
+    <string name="whats_happening">Burada neler oluyor?</string>
+    <string name="ask_hint">Sorun: Bu ne anlama geliyor? Tehlikeli mi?</string>
+    <string name="ask_send">Sor</string>
+    <string name="ai_generated_by">%1$s ile oluşturuldu · %2$s</string>
+    <string name="watch_region">Bölgeyi takip et</string>
+    <string name="full_detail">Tam detay</string>
+    <string name="forecast_10_day">10 günlük tahmin</string>
+
+    <!-- Event sheet -->
+    <string name="event_earthquake_title">🌍 M%1$s Deprem</string>
+    <string name="event_wildfire_title">🔥 Yangın tespiti</string>
+    <string name="event_volcano_title">🌋 %1$s</string>
+    <string name="event_location">Konum</string>
+    <string name="event_magnitude">Büyüklük</string>
+    <string name="event_depth">Derinlik</string>
+    <string name="event_time">Zaman</string>
+    <string name="event_satellite">Uydu</string>
+    <string name="event_brightness">Parlaklık</string>
+    <string name="event_confidence">Güven</string>
+    <string name="event_frp">FRP</string>
+    <string name="event_detected">Tespit</string>
+    <string name="event_country">Ülke</string>
+    <string name="event_elevation">Yükseklik</string>
+    <string name="event_evidence">Kanıt</string>
+    <string name="event_last_eruption">Son püskürme</string>
+    <string name="unknown">bilinmiyor</string>
+    <string name="catalog_warning">Smithsonian GVP statik katalog verisi. Gerçek zamanlı volkanik aktivite akışı kullanılmaz; bu güncel bir aktivite göstergesi değildir.</string>
+    <string name="ask_meaning">AI\'a sor: Bu ne anlama geliyor?</string>
+    <string name="safety_note">Güvenlik bilgisi için yerel resmî makamlara ve acil servislere başvurun.</string>
+
+    <!-- Timeline -->
+    <string name="timeline_title">Zaman çizelgesi</string>
+    <string name="timeline_radar_hint">Radar (RainViewer) — kareler arasında gezinmek için sürükleyin</string>
+    <string name="timeline_weather_hint">Hava modeli katmanları (Open-Meteo) — geçmiş / şimdi / tahmin</string>
+    <string name="timeline_empty">Zaman çizelgesini kullanmak için Yağış veya bir hava katmanını açın.</string>
+    <string name="timeline_now">ŞİMDİ</string>
+    <string name="timeline_minutes_ago">%1$d dk önce</string>
+    <string name="timeline_minutes_ahead">+%1$d dk (nowcast)</string>
+
+    <!-- Location detail -->
+    <string name="current_conditions">Mevcut koşullar</string>
+    <string name="feels_like">Hissedilen %1$s</string>
+    <string name="humidity">Nem</string>
+    <string name="pressure">Basınç</string>
+    <string name="rain_probability">Yağış olasılığı</string>
+    <string name="wind_direction_line">Rüzgâr yönü %1$s (%2$d°) · Hamleler %3$s</string>
+    <string name="hourly_forecast">Saatlik tahmin</string>
+    <string name="daily_forecast">Günlük tahmin (10 gün)</string>
+    <string name="sun_moon">Güneş ve Ay</string>
+    <string name="sunrise">Gün doğumu</string>
+    <string name="sunset">Gün batımı</string>
+    <string name="moonrise">Ay doğumu</string>
+    <string name="moonset">Ay batımı</string>
+    <string name="moon_phase">Ay evresi</string>
+    <string name="not_available">yok</string>
+    <string name="weather_unavailable">Hava durumu verisi kullanılamıyor.</string>
+    <string name="sun_moon_unavailable">Güneş ve ay verisi kullanılamıyor.</string>
+    <string name="event_feed">Olay akışı</string>
+    <string name="no_events_nearby">Bu konum yakınında önemli bir olay bildirilmedi.</string>
+    <string name="only_verified_events">Yalnızca resmî kaynaklardan doğrulanmış olaylar gösterilir.</string>
+    <string name="ai_summary">AI özeti</string>
+    <string name="data_sources_section">Veri kaynakları</string>
+    <string name="share">Paylaş</string>
+    <string name="back">Geri</string>
+    <string name="detail_weather_source">Open-Meteo · saatlik güncellenir</string>
+    <string name="detail_eq_source">USGS · kesintisiz akış</string>
+    <string name="detail_fire_source">NASA FIRMS · gerçeğe yakın zamanlı</string>
+    <string name="detail_volcano_source">Smithsonian GVP · statik katalog</string>
+    <string name="detail_aurora_source">NOAA SWPC · ~30 dakikada bir</string>
+    <string name="detail_radar_source">RainViewer · 10 dakikada bir</string>
+    <string name="share_now_suffix">ŞİMDİ</string>
+    <string name="share_footer">Earth Now — canlı Dünya keşfi\nVeri: USGS, NOAA SWPC, NASA FIRMS, Open-Meteo, RainViewer\nGüncellendi: %1$s</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_appearance">Görünüm</string>
+    <string name="settings_theme">Tema</string>
+    <string name="theme_dark">Koyu (varsayılan)</string>
+    <string name="theme_light">Açık</string>
+    <string name="theme_system">Sistem</string>
+    <string name="settings_language">Dil</string>
+    <string name="language_system">Sistem</string>
+    <string name="language_english">English</string>
+    <string name="language_turkish">Türkçe</string>
+    <string name="settings_map_style">Varsayılan harita stili</string>
+    <string name="map_space">Uzay (koyu küre)</string>
+    <string name="map_satellite">Uydu</string>
+    <string name="map_streets">Sokak</string>
+    <string name="settings_units">Birimler</string>
+    <string name="units_temperature">Sıcaklık</string>
+    <string name="units_wind">Rüzgâr</string>
+    <string name="units_pressure">Basınç</string>
+    <string name="units_distance">Mesafe</string>
+    <string name="settings_data">Veri ve batarya</string>
+    <string name="settings_refresh">Veri yenileme aralığı</string>
+    <string name="refresh_minutes">%1$d dk</string>
+    <string name="settings_battery_saver">Batarya tasarrufu</string>
+    <string name="settings_battery_sub">Daha düşük çözünürlüklü ızgaralar, daha az eşzamanlı istek, daha seyrek yenileme</string>
+    <string name="settings_ai">AI</string>
+    <string name="settings_ai_features">AI özellikleri</string>
+    <string name="settings_ai_features_sub">AI sağlayıcısından özetler ve yanıtlar</string>
+    <string name="settings_ai_provider">AI sağlayıcısı</string>
+    <string name="ai_auto">Otomatik (ilk yapılandırılan)</string>
+    <string name="ai_openai">OpenAI uyumlu</string>
+    <string name="ai_gemini">Gemini</string>
+    <string name="ai_template">Yerel şablon (anahtarsız)</string>
+    <string name="settings_notifications">Bildirimler</string>
+    <string name="settings_notif_enable">Bildirimleri etkinleştir</string>
+    <string name="settings_notif_enable_sub">Takip edilen bölgeler için olay uyarıları (varsayılan kapalı)</string>
+    <string name="settings_notif_eq">Deprem ≥ eşik</string>
+    <string name="settings_notif_eq_sub">Büyüklük eşiğinin üzerindeki depremler için uyarı</string>
+    <string name="settings_notif_fire">Yakında yangın</string>
+    <string name="settings_notif_fire_sub">Takip edilen bölgelerde yangın tespit edilince uyarı</string>
+    <string name="settings_notif_volcano">Volkanik aktivite</string>
+    <string name="settings_notif_volcano_sub">GVP katalog güncellemelerinden uyarılar</string>
+    <string name="settings_notif_aurora">Aurora yüksek</string>
+    <string name="settings_notif_aurora_sub">Kp ≥ 5 olduğunda uyarı</string>
+    <string name="settings_storage">Depolama</string>
+    <string name="settings_live_note">Canlı mod daha fazla batarya kullanır</string>
+    <string name="settings_live_note_sub">Tek seferlik not olarak gösterilir</string>
+    <string name="settings_clear_cache">Arama geçmişini ve önbelleği temizle</string>
+    <string name="settings_about">Hakkında</string>
+    <string name="settings_about_text">Earth Now v1.0.2 — canlı Dünya keşfi.\nVeri kaynakları: Open-Meteo, USGS, NOAA SWPC, NASA FIRMS, RainViewer, Smithsonian GVP, Natural Earth.\nBaz haritalar: © OpenFreeMap, © OpenStreetMap katkıcıları, Sentinel-2 cloudless © EOX.</string>
+
+    <!-- Favorites -->
+    <string name="favorites_title">Favoriler</string>
+    <string name="no_favorites">Henüz favori yok</string>
+    <string name="no_favorites_hint">Küre üzerinde bir yere dokunun ve buraya kaydetmek için kalp simgesine basın.</string>
+    <string name="remove">Kaldır</string>
+
+    <!-- Watch -->
+    <string name="watch_title">Bölge takibi</string>
+    <string name="watch_hint">Takip edilen bölgeler arka planda kontrol edilir (yaklaşık 6 saatte bir). Bildirimler Ayarlar\'dan açılır — varsayılan kapalı.</string>
+    <string name="no_watches">Takip edilen bölge yok. Eklemek için bir konum panelinde \"Bölgeyi takip et\"e dokunun.</string>
+    <string name="watch_line">Deprem M≥%1$s · Yangın %2$s · Volkan %3$s · Aurora %4$s</string>
+    <string name="on">açık</string>
+    <string name="off">kapalı</string>
+
+    <!-- Data sources -->
+    <string name="sources_title">Veri kaynakları</string>
+    <string name="sources_intro">Earth Now, açık bilimsel kaynaklardan gelen gerçek verileri gösterir. Her katmanın kaynağı, güncelleme sıklığı ve lisansı aşağıda listelenmiştir. Bir kaynakta veri yoksa uygulama \"Veri yok\" der — asla değer uydurmaz.</string>
+    <string name="source_label">Kaynak</string>
+    <string name="update_label">Güncelleme</string>
+    <string name="license_label">Lisans</string>
+    <string name="license_openmeteo">CC BY 4.0 (Open-Meteo) · model verileri ulusal hava servislerinden</string>
+    <string name="license_rainviewer">RainViewer API — kişisel/eğitim kullanımı için ücretsiz; atıf gerekli</string>
+    <string name="license_usgs">USGS kamu malı; atıf rica edilir</string>
+    <string name="license_firms">NASA FIRMS — ücretsiz MAP_KEY gerekli; NASA atfı zorunlu</string>
+    <string name="license_gvp">Smithsonian GVP veritabanı — atıf: Global Volcanism Program, Volcanoes of the World. Statik katalog; gerçek zamanlı değil.</string>
+    <string name="license_noaa">NOAA SWPC — kamu malı; atıf rica edilir</string>
+    <string name="license_calculated">Güneş efemerisinden hesaplanır (astronomik algoritma)</string>
+    <string name="wildfire_key_note">Not: local.properties içinde ücretsiz NASA FIRMS MAP_KEY gerektirir. Yoksa bu katman \"Veri yok\" gösterir.</string>
+    <string name="basemaps_title">🗺️ Baz haritalar</string>
+    <string name="basemap_space">Uygulama içi koyu renklerle OpenFreeMap vektör tabanı — © OpenFreeMap, © OpenStreetMap katkıcıları</string>
+    <string name="basemap_satellite">Sentinel-2 cloudless © EOX (WMTS, anahtarsız)</string>
+    <string name="basemap_streets">© OpenStreetMap katkıcıları (ODbL)</string>
+    <string name="basemap_cached">MapLibre tile\'ları yalnızca görüntüleme için yerel olarak önbelleğe alır. Yeniden dağıtım yoktur.</string>
+    <string name="ai_source_title">🤖 AI</string>
+    <string name="ai_source_provider">OpenAI uyumlu veya Google Gemini (yapılandırılabilir) ya da yerel şablon</string>
+    <string name="ai_source_data">Yalnızca uygulamada gösterilen yapılandırılmış gerçek veriler — asla uydurma bilgi</string>
+    <string name="ai_source_safety">AI kesin tehlike tavsiyesi vermez; yerel resmî makamlara yönlendirir</string>
+
+    <!-- Onboarding -->
+    <string name="onb1_title">Dünyayı canlı görün</string>
+    <string name="onb1_body">Gezegenimizin gerçek 3D küresi. Döndürün, yakınlaştırın ve şu anda dünyanın herhangi bir yerinde neler olduğunu keşfedin.</string>
+    <string name="onb2_title">Canlı veri katmanları</string>
+    <string name="onb2_body">Sıcaklık, bulutlar, rüzgâr, yağış, deniz sıcaklığı, depremler, orman yangınları, volkanlar ve aurora — hepsi gerçek bilimsel kaynaklardan.</string>
+    <string name="onb3_title">AI\'a sorun: burada neler oluyor?</string>
+    <string name="onb3_body">Herhangi bir noktaya dokunun ve sorun. AI, ekranınızdaki gerçek verileri kullanarak yanıtlar — asla uydurma bilgi vermez.</string>
+    <string name="onb4_title">Dünyayı keşfedin</string>
+    <string name="onb4_body">Şehirleri, ülkeleri, volkanları ve okyanusları arayın. Favorileri kaydedin, bölgeleri takip edin ve canlı görüntüleri paylaşın.</string>
+    <string name="onb_next">İleri</string>
+    <string name="onb_back">Geri</string>
+    <string name="onb_skip">Atla</string>
+    <string name="onb_start">Keşfetmeye başla</string>
+
+    <!-- Weather codes -->
+    <string name="wc_clear">Açık</string>
+    <string name="wc_partly">Parçalı bulutlu</string>
+    <string name="wc_fog">Sisli</string>
+    <string name="wc_drizzle">Çisenti</string>
+    <string name="wc_rain">Yağmurlu</string>
+    <string name="wc_snow">Kar</string>
+    <string name="wc_thunderstorm">Gök gürültülü</string>
+    <string name="wc_unknown">Bilinmiyor</string>
+
+    <!-- Time -->
+    <string name="time_just_now">az önce</string>
+    <string name="time_one_min">1 dk önce</string>
+    <string name="time_min_ago">%1$d dk önce</string>
+    <string name="time_hours_ago">%1$d sa %2$d dk önce</string>
+    <string name="time_days_ago">%1$d gün önce</string>
+
+    <string name="update_note_temperature">Saatlik güncellenir (model çalıştırmaları)</string>
+    <string name="update_note_precipitation">10 dakikada bir güncellenir</string>
+    <string name="update_note_clouds">Saatlik güncellenir (model çalıştırmaları)</string>
+    <string name="update_note_wind">Saatlik güncellenir (model çalıştırmaları)</string>
+    <string name="update_note_ocean">Saatlik güncellenir</string>
+    <string name="update_note_fires">Gerçeğe yakın zamanlı (uydu geçişi)</string>
+    <string name="update_note_earthquakes">Kesintisiz akış</string>
+    <string name="update_note_volcanoes">Katalog: periyodik güncellenir; gerçek zamanlı akış yok</string>
+    <string name="update_note_aurora">~30 dakikada bir güncellenir</string>
+    <string name="update_note_daynight">Gerçek zamanlı</string>
+    <!-- Notifications -->
+    <string name="notif_eq_near">🌍 M%1$s deprem — %2$s yakınında</string>
+    <string name="notif_eq_detail">%1$s | %2$d km derinlik | %3$s</string>
+    <string name="notif_fire_near">🔥 %1$s yakınında yangın tespitleri</string>
+    <string name="notif_fire_detail">NASA FIRMS %1$d aktif sıcak nokta bildirdi</string>
+    <string name="notif_aurora_title">🌌 Yüksek aurora aktivitesi (Kp %1$s)</string>
+    <string name="notif_aurora_detail">%1$s yakınında aurora görünürlüğü artabilir. Güncel koşullar için NOAA SWPC\'yi kontrol edin.</string>
+    <string name="notif_channel">Bölge takibi olayları</string>
+    <string name="notif_channel_desc">Takip edilen bölgeler için önemli depremler, yangınlar, volkanik güncellemeler ve aurora uyarıları</string>
+</resources>

@@ -302,6 +302,7 @@ data class NotificationPrefs(
 
 data class UserSettings(
     val themeMode: String = "dark",              // dark | light | system
+    val languageMode: String = "system",         // system | en | tr
     val mapStyle: String = "space",              // space | satellite | streets
     val defaultLayers: Set<String> = emptySet(),
     val tempUnit: com.earthnow.app.util.Units.TempUnit = com.earthnow.app.util.Units.TempUnit.CELSIUS,

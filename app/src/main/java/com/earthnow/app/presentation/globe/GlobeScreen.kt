@@ -91,6 +91,9 @@ import com.earthnow.app.util.TimeFormat
 import com.earthnow.app.util.Units
 import kotlinx.coroutines.launch
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.res.stringResource
+import com.earthnow.app.R
+import com.earthnow.app.presentation.localization.relativeTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -169,33 +172,33 @@ fun GlobeScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                FloatingControl(onClick = { showSearch = true }, icon = Icons.Default.Search, contentDescription = "Search places")
+                FloatingControl(onClick = { showSearch = true }, icon = Icons.Default.Search, contentDescription = stringResource(R.string.search_places))
                 Spacer(Modifier.weight(1f))
                 if (!ui.online) {
                     Surface(
                         shape = RoundedCornerShape(14.dp),
                         color = MaterialTheme.colorScheme.errorContainer
                     ) {
-                        Text("Offline", Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                        Text(stringResource(R.string.offline_chip), Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onErrorContainer)
                     }
                     Spacer(Modifier.width(8.dp))
                 }
                 FloatingControl(onClick = { showTimeline = !showTimeline }, icon = Icons.Default.Timeline,
-                    contentDescription = "Data timeline", highlighted = showTimeline)
+                    contentDescription = stringResource(R.string.data_timeline), highlighted = showTimeline)
                 FloatingControl(onClick = { showLayers = true }, icon = Icons.Default.Layers,
-                    contentDescription = "Data layers", highlighted = ui.enabledLayers.isNotEmpty())
+                    contentDescription = stringResource(R.string.data_layers), highlighted = ui.enabledLayers.isNotEmpty())
                 Box {
-                    FloatingControl(onClick = { menuOpen = true }, icon = Icons.Default.MoreVert, contentDescription = "More")
+                    FloatingControl(onClick = { menuOpen = true }, icon = Icons.Default.MoreVert, contentDescription = stringResource(R.string.more_options))
                     DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                        DropdownMenuItem(text = { Text("Favorites") }, onClick = { menuOpen = false; onOpenFavorites() },
+                        DropdownMenuItem(text = { Text(stringResource(R.string.menu_favorites)) }, onClick = { menuOpen = false; onOpenFavorites() },
                             leadingIcon = { Icon(Icons.Default.Favorite, null) })
-                        DropdownMenuItem(text = { Text("Region watch") }, onClick = { menuOpen = false; onOpenWatch() },
+                        DropdownMenuItem(text = { Text(stringResource(R.string.menu_watch)) }, onClick = { menuOpen = false; onOpenWatch() },
                             leadingIcon = { Icon(Icons.Default.Notifications, null) })
-                        DropdownMenuItem(text = { Text("Data sources") }, onClick = { menuOpen = false; onOpenDataSources() },
+                        DropdownMenuItem(text = { Text(stringResource(R.string.menu_data_sources)) }, onClick = { menuOpen = false; onOpenDataSources() },
                             leadingIcon = { Icon(Icons.Default.Info, null) })
-                        DropdownMenuItem(text = { Text("Settings") }, onClick = { menuOpen = false; onOpenSettings() },
+                        DropdownMenuItem(text = { Text(stringResource(R.string.menu_settings)) }, onClick = { menuOpen = false; onOpenSettings() },
                             leadingIcon = { Icon(Icons.Default.Settings, null) })
                     }
                 }
@@ -207,9 +210,9 @@ fun GlobeScreen(
                         if (hasLoc) locateAndSelect(viewModel, context)
                         else locationPermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
                     },
-                    icon = Icons.Default.LocationOn, contentDescription = "Locate me"
+                    icon = Icons.Default.LocationOn, contentDescription = stringResource(R.string.locate_me)
                 )
-                FloatingControl(onClick = { viewModel.manualRefresh() }, icon = Icons.Default.Refresh, contentDescription = "Refresh data")
+                FloatingControl(onClick = { viewModel.manualRefresh() }, icon = Icons.Default.Refresh, contentDescription = stringResource(R.string.refresh_data))
             }
         }
 
@@ -236,7 +239,7 @@ fun GlobeScreen(
                 color = MaterialTheme.colorScheme.errorContainer
             ) {
                 Text(
-                    "Offline — showing last known data",
+                    stringResource(R.string.offline_banner),
                     Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onErrorContainer
@@ -351,7 +354,7 @@ private fun locateAndSelect(viewModel: GlobeViewModel, context: android.content.
     if (loc != null) {
         val place = Place(
             id = "my_location",
-            name = "My location",
+            name = context.getString(R.string.locate_me),
             lat = loc.latitude,
             lon = loc.longitude,
             kind = "point"
@@ -379,29 +382,33 @@ fun SelectedPlaceSheet(
     val w = ctx.weather
     val unit = settings.tempUnit
     var question by remember { mutableStateOf("") }
+    val unavailable = stringResource(R.string.unavailable)
 
     Column(Modifier.padding(horizontal = 20.dp).padding(bottom = 32.dp)) {
         DismissBar()
         Spacer(Modifier.height(12.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text(ctx.place.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                ctx.place.country?.let {
+                val displayName = ctx.place.name.ifBlank { stringResource(R.string.selected_point) }
+                Text(displayName, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                ctx.place.country?.takeIf { it != displayName }?.let {
                     Text(it, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
             IconButton(onClick = onToggleFavorite) {
                 Icon(
                     if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = "Favorite",
+                    contentDescription = stringResource(R.string.favorite),
                     tint = if (isFavorite) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            IconButton(onClick = onRefresh) { Icon(Icons.Default.Refresh, "Refresh", tint = MaterialTheme.colorScheme.onSurfaceVariant) }
+            IconButton(onClick = onRefresh) {
+                Icon(Icons.Default.Refresh, stringResource(R.string.refresh_data), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
         }
 
         Text(
-            "Data updated ${TimeFormat.ago(ctx.fetchedAt)}",
+            stringResource(R.string.data_updated, relativeTime(ctx.fetchedAt)),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -409,33 +416,60 @@ fun SelectedPlaceSheet(
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             w?.temperatureC?.let {
-                StatChip("🌡️", "Temp", Units.tempLabel(it, unit), Modifier.weight(1f))
-            } ?: StatChip("🌡️", "Temp", "unavailable", Modifier.weight(1f))
+                StatChip("🌡️", stringResource(R.string.temp_label), Units.tempLabel(it, unit), Modifier.weight(1f))
+            } ?: StatChip("🌡️", stringResource(R.string.temp_label), unavailable, Modifier.weight(1f))
             w?.windSpeedKmh?.let {
-                StatChip("🌬️", "Wind", "${Units.wind(it, settings.windUnit).toInt()} ${settings.windUnit.label}", Modifier.weight(1f))
-            } ?: StatChip("🌬️", "Wind", "unavailable", Modifier.weight(1f))
+                StatChip(
+                    "🌬️", stringResource(R.string.wind_label),
+                    "${Units.wind(it, settings.windUnit).toInt()} ${settings.windUnit.label}",
+                    Modifier.weight(1f)
+                )
+            } ?: StatChip("🌬️", stringResource(R.string.wind_label), unavailable, Modifier.weight(1f))
         }
         Spacer(Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            w?.cloudCover?.let { StatChip("☁️", "Clouds", "${it.toInt()}%", Modifier.weight(1f)) }
-                ?: StatChip("☁️", "Clouds", "unavailable", Modifier.weight(1f))
-            w?.rainProbability?.let { StatChip("🌧️", "Rain", "${it.toInt()}%", Modifier.weight(1f)) }
-                ?: StatChip("🌧️", "Rain", "unavailable", Modifier.weight(1f))
+            w?.cloudCover?.let { StatChip("☁️", stringResource(R.string.clouds_label), "${it.toInt()}%", Modifier.weight(1f)) }
+                ?: StatChip("☁️", stringResource(R.string.clouds_label), unavailable, Modifier.weight(1f))
+            w?.rainProbability?.let { StatChip("🌧️", stringResource(R.string.rain_label), "${it.toInt()}%", Modifier.weight(1f)) }
+                ?: StatChip("🌧️", stringResource(R.string.rain_label), unavailable, Modifier.weight(1f))
         }
         Spacer(Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            StatChip("🌍", "Earthquakes today", "${ctx.earthquakesTodayCount}", Modifier.weight(1f))
-            StatChip("🔥", "Wildfires nearby", "${ctx.wildfires.size}", Modifier.weight(1f))
+            StatChip("🌍", stringResource(R.string.earthquakes_today), "${ctx.earthquakesTodayCount}", Modifier.weight(1f))
+            StatChip("🔥", stringResource(R.string.wildfires_nearby), "${ctx.wildfires.size}", Modifier.weight(1f))
         }
         Spacer(Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             ctx.aurora?.kpIndex?.let {
-                val label = when { it >= 5 -> "High"; it >= 3 -> "Moderate"; else -> "Low" }
-                StatChip("🌌", "Aurora", "Kp ${"%.1f".format(it)} · $label", Modifier.weight(1f))
-            } ?: StatChip("🌌", "Aurora", "unavailable", Modifier.weight(1f))
-            ctx.volcanoesNearby.size.let {
-                StatChip("🌋", "Volcanoes", "$it in GVP catalog", Modifier.weight(1f))
-            }
+                val label = when {
+                    it >= 5 -> stringResource(R.string.aurora_high)
+                    it >= 3 -> stringResource(R.string.aurora_moderate)
+                    else -> stringResource(R.string.aurora_low)
+                }
+                StatChip(
+                    "🌌", stringResource(R.string.layer_aurora),
+                    stringResource(R.string.aurora_kp_fmt, "%.1f".format(it), label),
+                    Modifier.weight(1f)
+                )
+            } ?: StatChip("🌌", stringResource(R.string.layer_aurora), unavailable, Modifier.weight(1f))
+            StatChip(
+                "🌋", stringResource(R.string.layer_volcanoes),
+                stringResource(R.string.volcanoes_nearby, ctx.volcanoesNearby.size),
+                Modifier.weight(1f)
+            )
+        }
+
+        // 10-day forecast at a glance
+        val daily = w?.daily.orEmpty()
+        if (daily.isNotEmpty()) {
+            Spacer(Modifier.height(14.dp))
+            Text(
+                stringResource(R.string.forecast_10_day),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(Modifier.height(6.dp))
+            DailyForecastStrip(days = daily, tempUnit = unit)
         }
 
         Spacer(Modifier.height(14.dp))
@@ -446,7 +480,7 @@ fun SelectedPlaceSheet(
             }
             Icon(Icons.Default.AutoAwesome, null, Modifier.size(18.dp))
             Spacer(Modifier.width(8.dp))
-            Text("What's happening here?")
+            Text(stringResource(R.string.whats_happening))
         }
 
         aiSummary?.let { s ->
@@ -456,7 +490,7 @@ fun SelectedPlaceSheet(
                     Text(s.text, style = MaterialTheme.typography.bodyMedium)
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "Generated by ${s.provider} · ${TimeFormat.ago(s.generatedAt)}",
+                        stringResource(R.string.ai_generated_by, s.provider, relativeTime(s.generatedAt)),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -487,11 +521,11 @@ fun SelectedPlaceSheet(
             value = question,
             onValueChange = { question = it },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Ask: What does this mean? Is this dangerous?") },
+            placeholder = { Text(stringResource(R.string.ask_hint)) },
             trailingIcon = {
                 IconButton(onClick = {
                     if (question.isNotBlank()) { onAsk(question.trim()); question = "" }
-                }) { Icon(Icons.AutoMirrored.Filled.Send, "Ask") }
+                }) { Icon(Icons.AutoMirrored.Filled.Send, stringResource(R.string.ask_send)) }
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(onSend = {
@@ -505,12 +539,12 @@ fun SelectedPlaceSheet(
             OutlinedButton(onClick = onWatch, modifier = Modifier.weight(1f)) {
                 Icon(Icons.Default.Notifications, null, Modifier.size(16.dp))
                 Spacer(Modifier.width(6.dp))
-                Text("Watch region")
+                Text(stringResource(R.string.watch_region))
             }
             OutlinedButton(onClick = onDetail, modifier = Modifier.weight(1f)) {
                 Icon(Icons.Default.Info, null, Modifier.size(16.dp))
                 Spacer(Modifier.width(6.dp))
-                Text("Full detail")
+                Text(stringResource(R.string.full_detail))
             }
         }
     }
@@ -530,37 +564,43 @@ fun EventSheet(
         val title = when (event.type) {
             "earthquake" -> {
                 val mag = (props["mag"] as? Double) ?: 0.0
-                "🌍 M${"%.1f".format(mag)} Earthquake"
+                stringResource(R.string.event_earthquake_title, "%.1f".format(mag))
             }
-            "wildfire" -> "🔥 Wildfire detection"
-            "volcano" -> "🌋 ${props["name"] ?: "Volcano"}"
-            else -> "Event"
+            "wildfire" -> stringResource(R.string.event_wildfire_title)
+            "volcano" -> stringResource(R.string.event_volcano_title, props["name"]?.toString() ?: "")
+            else -> stringResource(R.string.unknown)
         }
         Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(12.dp))
 
         when (event.type) {
             "earthquake" -> {
-                KeyValueRow("Location", props["place"]?.toString() ?: "Unknown")
-                KeyValueRow("Magnitude", "M${"%.1f".format((props["mag"] as? Double) ?: 0.0)}")
-                KeyValueRow("Depth", "${(props["depth"] as? Double)?.toInt() ?: "?"} km")
-                KeyValueRow("Time", TimeFormat.ago((props["time"] as? Double)?.toLong() ?: 0L))
+                KeyValueRow(stringResource(R.string.event_location), props["place"]?.toString() ?: "?")
+                KeyValueRow(stringResource(R.string.event_magnitude), "M${"%.1f".format((props["mag"] as? Double) ?: 0.0)}")
+                KeyValueRow(stringResource(R.string.event_depth), "${(props["depth"] as? Double)?.toInt() ?: "?"} km")
+                KeyValueRow(
+                    stringResource(R.string.event_time),
+                    relativeTime((props["time"] as? Double)?.toLong() ?: 0L)
+                )
             }
             "wildfire" -> {
-                KeyValueRow("Satellite", props["satellite"]?.toString() ?: "?")
-                KeyValueRow("Brightness", "${(props["brightness"] as? Double)?.toInt() ?: "?"} K")
-                KeyValueRow("Confidence", props["confidence"]?.toString() ?: "?")
-                KeyValueRow("FRP", "${(props["frp"] as? Double) ?: 0.0} MW")
-                KeyValueRow("Detected", "${props["acq_date"]} ${props["acq_time"]} UTC")
+                KeyValueRow(stringResource(R.string.event_satellite), props["satellite"]?.toString() ?: "?")
+                KeyValueRow(stringResource(R.string.event_brightness), "${(props["brightness"] as? Double)?.toInt() ?: "?"} K")
+                KeyValueRow(stringResource(R.string.event_confidence), props["confidence"]?.toString() ?: "?")
+                KeyValueRow(stringResource(R.string.event_frp), "${(props["frp"] as? Double) ?: 0.0} MW")
+                KeyValueRow(stringResource(R.string.event_detected), "${props["acq_date"]} ${props["acq_time"]} UTC")
             }
             "volcano" -> {
-                KeyValueRow("Country", props["country"]?.toString() ?: "?")
-                KeyValueRow("Elevation", "${(props["elevation"] as? Double)?.toInt() ?: "?"} m")
-                KeyValueRow("Evidence", props["evidence"]?.toString() ?: "?")
-                KeyValueRow("Last eruption", props["last_eruption"]?.toString() ?: "unknown")
+                KeyValueRow(stringResource(R.string.event_country), props["country"]?.toString() ?: "?")
+                KeyValueRow(stringResource(R.string.event_elevation), "${(props["elevation"] as? Double)?.toInt() ?: "?"} m")
+                KeyValueRow(stringResource(R.string.event_evidence), props["evidence"]?.toString() ?: "?")
+                KeyValueRow(
+                    stringResource(R.string.event_last_eruption),
+                    props["last_eruption"]?.toString() ?: stringResource(R.string.unknown)
+                )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Static catalog data from the Smithsonian GVP. No real-time volcanic activity feed is used; this does not indicate current activity.",
+                    stringResource(R.string.catalog_warning),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -571,11 +611,11 @@ fun EventSheet(
         Button(onClick = { onAsk("What does this mean?") }, modifier = Modifier.fillMaxWidth()) {
             Icon(Icons.Default.AutoAwesome, null, Modifier.size(18.dp))
             Spacer(Modifier.width(8.dp))
-            Text("Ask AI: What does this mean?")
+            Text(stringResource(R.string.ask_meaning))
         }
         Spacer(Modifier.height(8.dp))
         Text(
-            "For safety guidance, check local official authorities and emergency services.",
+            stringResource(R.string.safety_note),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

@@ -42,7 +42,7 @@ class WeatherRepository @Inject constructor(
                     "wind_speed_10m,cloud_cover",
                 daily = "temperature_2m_max,temperature_2m_min,precipitation_probability_max," +
                     "sunrise,sunset,moonrise,moonset,moon_phase,weather_code",
-                forecastDays = 3,
+                forecastDays = 10,
                 pastDays = 1
             )
             if (dto.error == true) throw IllegalStateException(dto.reason ?: "Open-Meteo error")

@@ -1,4 +1,4 @@
-﻿package com.earthnow.app.ai
+package com.earthnow.app.ai
 
 import com.earthnow.app.BuildConfig
 import com.earthnow.app.data.prefs.SettingsRepository
@@ -18,9 +18,20 @@ class AiManager @Inject constructor(
     private val openAiProvider: OpenAiProvider,
     private val geminiProvider: GeminiProvider,
     private val templateProvider: TemplateSummaryProvider,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    @dagger.hilt.android.qualifiers.ApplicationContext private val appContext: android.content.Context
 ) {
     data class AiResult(val text: String, val provider: String, val usedFallback: Boolean)
+
+    private fun appLanguage(): String =
+        runCatching { appContext.resources.configuration.locales[0].language }.getOrDefault("en")
+
+    private fun providerUnavailable(e: Exception, fallback: String): String =
+        if (appLanguage() == "tr") {
+            "AI sağlayıcısına ulaşılamadı (${e.message ?: "hata"}). Bunun yerine veri şablonu gösteriliyor:\n\n$fallback"
+        } else {
+            "AI provider unavailable (${e.message ?: "error"}). Showing data template instead:\n\n$fallback"
+        }
 
     suspend fun summarize(
         context: LocationContext,
@@ -28,42 +39,39 @@ class AiManager @Inject constructor(
         windUnit: com.earthnow.app.util.Units.WindUnit
     ): AiResult {
         val s = settingsRepository.settings.first()
+        val lang = appLanguage()
         if (!s.aiEnabled) {
-            return AiResult(templateProvider.summarize(context, tempUnit, windUnit), templateProvider.displayName, true)
+            return AiResult(templateProvider.summarize(context, tempUnit, windUnit, lang), templateProvider.displayName, true)
         }
         val chosen = pickProvider(s.aiProvider)
         return try {
             when (chosen) {
-                "template" -> AiResult(templateProvider.summarize(context, tempUnit, windUnit), templateProvider.displayName, true)
-                "gemini" -> AiResult(geminiProvider.summarize(context, tempUnit, windUnit), geminiProvider.displayName, false)
-                else -> AiResult(openAiProvider.summarize(context, tempUnit, windUnit), openAiProvider.displayName, false)
+                "template" -> AiResult(templateProvider.summarize(context, tempUnit, windUnit, lang), templateProvider.displayName, true)
+                "gemini" -> AiResult(geminiProvider.summarize(context, tempUnit, windUnit, lang), geminiProvider.displayName, false)
+                else -> AiResult(openAiProvider.summarize(context, tempUnit, windUnit, lang), openAiProvider.displayName, false)
             }
         } catch (e: Exception) {
-            val fallback = templateProvider.summarize(context, tempUnit, windUnit)
-            AiResult(
-                "AI provider unavailable (${e.message ?: "error"}). Showing data template instead:\n\n$fallback",
-                templateProvider.displayName,
-                true
-            )
+            val fallback = templateProvider.summarize(context, tempUnit, windUnit, lang)
+            AiResult(providerUnavailable(e, fallback), templateProvider.displayName, true)
         }
     }
 
     suspend fun askQuestion(question: String, dataContext: String): AiResult {
         val s = settingsRepository.settings.first()
+        val lang = appLanguage()
         if (!s.aiEnabled) {
-            return AiResult(templateProvider.askQuestion(question, dataContext), templateProvider.displayName, true)
+            return AiResult(templateProvider.askQuestion(question, dataContext, lang), templateProvider.displayName, true)
         }
         val chosen = pickProvider(s.aiProvider)
         return try {
             when (chosen) {
-                "template" -> AiResult(templateProvider.askQuestion(question, dataContext), templateProvider.displayName, true)
-                "gemini" -> AiResult(geminiProvider.askQuestion(question, dataContext), geminiProvider.displayName, false)
-                else -> AiResult(openAiProvider.askQuestion(question, dataContext), openAiProvider.displayName, false)
+                "template" -> AiResult(templateProvider.askQuestion(question, dataContext, lang), templateProvider.displayName, true)
+                "gemini" -> AiResult(geminiProvider.askQuestion(question, dataContext, lang), geminiProvider.displayName, false)
+                else -> AiResult(openAiProvider.askQuestion(question, dataContext, lang), openAiProvider.displayName, false)
             }
         } catch (e: Exception) {
             AiResult(
-                "AI provider unavailable (${e.message ?: "error"}).\n\n" +
-                    templateProvider.askQuestion(question, dataContext),
+                providerUnavailable(e, templateProvider.askQuestion(question, dataContext, lang)),
                 templateProvider.displayName,
                 true
             )

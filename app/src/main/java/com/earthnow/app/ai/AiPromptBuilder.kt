@@ -17,21 +17,24 @@ object AiPromptBuilder {
     private val moshi = Moshi.Builder().build()
     private val mapType = Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java)
 
-    const val SYSTEM_PROMPT = """You are a concise Earth-observation assistant inside a live Earth explorer app.
+    private const val BASE_SYSTEM_PROMPT = """You are a concise Earth-observation assistant inside a live Earth explorer app.
 RULES (must always be followed):
 1. Use ONLY the structured data provided in the user message. Never invent, guess, or recall any measurement, event, or forecast.
 2. If a field is null or missing, say "Data unavailable" for that item — do not estimate.
 3. Weather data is a model forecast; aurora estimates are model-based; earthquake/wildfire/volcano data come from official feeds. Express appropriate uncertainty ("may", "estimated", "reported").
 4. Never provide definitive safety advice about earthquakes, volcanoes, storms, or other hazards. If the user asks about danger, say: "For safety guidance, check your local official authorities and emergency services." and keep it brief.
 5. Answer in 3-6 sentences for summaries, or a short paragraph for questions. Use plain language.
-6. Prefer metric units as provided; convert only when the user asks."""
+6. Prefer metric units as provided; convert only when the user asks.
+7. Answer in the language given by the `language` field: "tr" means Turkish, "en" means English. If the field is missing, answer in English."""
 
-    fun summarySystemPrompt(): String = SYSTEM_PROMPT
+    fun summarySystemPrompt(language: String = "en"): String =
+        BASE_SYSTEM_PROMPT + if (language == "tr") "\n\nThe app language is Turkish. Write the entire answer in Turkish." else ""
 
     fun summaryPayload(
         context: LocationContext,
         tempUnit: com.earthnow.app.util.Units.TempUnit,
-        windUnit: com.earthnow.app.util.Units.WindUnit
+        windUnit: com.earthnow.app.util.Units.WindUnit,
+        language: String = "en"
     ): String {
         val w = context.weather
         val aurora = context.aurora
@@ -68,6 +71,7 @@ RULES (must always be followed):
             "aurora_kp_index" to kp,
             "aurora_estimated_visibility" to auroraLabel,
             "ocean_surface_temperature_celsius" to context.oceanTemp,
+            "language" to language,
             "data_updated_at" to TimeFormat.ago(context.fetchedAt)
         )
         @Suppress("UNCHECKED_CAST")
@@ -75,7 +79,8 @@ RULES (must always be followed):
         return adapter.toJson(data)
     }
 
-    fun questionSystemPrompt(): String = SYSTEM_PROMPT
+    fun questionSystemPrompt(language: String = "en"): String =
+        BASE_SYSTEM_PROMPT + if (language == "tr") "\n\nThe app language is Turkish. Write the entire answer in Turkish." else ""
 
     fun questionPayload(question: String, dataContext: String): String =
         """Question from the user: "$question"

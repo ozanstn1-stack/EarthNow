@@ -1,7 +1,6 @@
 package com.earthnow.app.presentation.globe
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,8 +33,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.earthnow.app.R
 import com.earthnow.app.domain.model.Place
 
 @Composable
@@ -66,19 +67,19 @@ fun SearchSheet(
                     value = query,
                     onValueChange = { query = it; onQueryChange(it) },
                     modifier = Modifier.weight(1f),
-                    placeholder = { Text("Search: city, country, volcano, ocean…") },
+                    placeholder = { Text(stringResource(R.string.search_hint)) },
                     singleLine = true
                 )
                 Spacer(Modifier.width(6.dp))
                 IconButton(
                     onClick = onClose,
                     modifier = Modifier.size(44.dp)
-                ) { Icon(Icons.Default.Close, "Close search") }
+                ) { Icon(Icons.Default.Close, stringResource(R.string.close_search)) }
             }
             Spacer(Modifier.height(10.dp))
 
             if (loading) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center) {
                     CircularProgressIndicator(Modifier.width(24.dp).height(24.dp), strokeWidth = 2.dp)
                 }
             } else if (results.isNotEmpty()) {
@@ -89,10 +90,14 @@ fun SearchSheet(
                 }
             } else if (query.isBlank()) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Recent places", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    Text(
+                        stringResource(R.string.recent_places),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold
+                    )
                     Spacer(Modifier.weight(1f))
                     if (recent.isNotEmpty()) {
-                        TextButton(onClick = onClearHistory) { Text("Clear") }
+                        TextButton(onClick = onClearHistory) { Text(stringResource(R.string.clear)) }
                     }
                 }
                 LazyColumn {
@@ -102,7 +107,7 @@ fun SearchSheet(
                 }
             } else {
                 Text(
-                    "No results. Tip: search a city name, country, volcano (e.g. Mount Etna) or ocean.",
+                    stringResource(R.string.no_results),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

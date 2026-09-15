@@ -35,12 +35,13 @@ data class LocationDetailState(
 
 @HiltViewModel
 class LocationDetailViewModel @Inject constructor(
-savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val locationContextRepository: LocationContextRepository,
     private val localDataRepository: LocalDataRepository,
     private val aiManager: AiManager,
     private val settingsRepository: SettingsRepository,
-    private val geocodingRepository: GeocodingRepository
+    private val geocodingRepository: GeocodingRepository,
+    @dagger.hilt.android.qualifiers.ApplicationContext private val appContext: android.content.Context
 ) : ViewModel() {
 
     private val lat: Double = savedStateHandle["lat"] ?: 0.0
@@ -114,20 +115,27 @@ savedStateHandle: SavedStateHandle,
         }
     }
 
-fun shareText(): String {
-        val ctx = _ui.value.context ?: return "Earth Now"
+    fun shareText(): String {
+        val ctx = _ui.value.context ?: return appContext.getString(com.earthnow.app.R.string.app_name)
         val w = ctx.weather
         val aurora = ctx.aurora
+        val res = appContext.resources
         return buildString {
-            append("${place.name.uppercase()} NOW\n")
+            append("${place.name.uppercase()} ${res.getString(com.earthnow.app.R.string.share_now_suffix)}\n")
             w?.let {
-                append("🌡️ ${it.temperatureC?.let { t -> com.earthnow.app.util.Units.tempLabel(t, com.earthnow.app.util.Units.TempUnit.CELSIUS) } ?: "n/a"}\n")
-                append("🌬️ ${it.windSpeedKmh?.let { s -> com.earthnow.app.util.Units.windLabel(s, com.earthnow.app.util.Units.WindUnit.KMH) } ?: "n/a"}\n")
+                append("🌡️ ${it.temperatureC?.let { t -> com.earthnow.app.util.Units.tempLabel(t, com.earthnow.app.util.Units.TempUnit.CELSIUS) } ?: "-"}\n")
+                append("🌬️ ${it.windSpeedKmh?.let { s -> com.earthnow.app.util.Units.windLabel(s, com.earthnow.app.util.Units.WindUnit.KMH) } ?: "-"}\n")
                 append("☁️ ${it.cloudCover?.toInt() ?: 0}%\n")
             }
-            append("🌍 ${ctx.earthquakesTodayCount} earthquakes today\n")
-            aurora?.kpIndex?.let { append("🌌 Aurora Kp ${"%.1f".format(it)}\n") }
-            append("\nEarth Now — live Earth explorer\nData: USGS, NOAA SWPC, NASA FIRMS, Open-Meteo, RainViewer\nUpdated ${com.earthnow.app.util.TimeFormat.ago(ctx.fetchedAt)}")
+            append("🌍 ${ctx.earthquakesTodayCount} ${res.getString(com.earthnow.app.R.string.earthquakes_today)}\n")
+            aurora?.kpIndex?.let { append("🌌 Kp ${"%.1f".format(it)}\n") }
+            append("\n")
+            append(
+                res.getString(
+                    com.earthnow.app.R.string.share_footer,
+                    com.earthnow.app.presentation.localization.TimeAgo.format(appContext, ctx.fetchedAt)
+                )
+            )
         }
     }
 

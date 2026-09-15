@@ -27,7 +27,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.earthnow.app.R
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.earthnow.app.presentation.globe.GlobeViewModel
 import com.earthnow.app.presentation.globe.StatChip
@@ -44,9 +46,9 @@ fun FavoritesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Favorites", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.favorites_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") }
+                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back)) }
                 }
             )
         }
@@ -56,8 +58,8 @@ fun FavoritesScreen(
                 Modifier.fillMaxSize().padding(padding).padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("No favorites yet", style = MaterialTheme.typography.titleMedium)
-                Text("Tap a place on the globe and press the heart to save it here.",
+                Text(stringResource(R.string.no_favorites), style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.no_favorites_hint),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
@@ -81,7 +83,7 @@ fun FavoritesScreen(
                             }
                         }
                         IconButton(onClick = { viewModel.removeFromFavorites(place.id) }) {
-                            Icon(Icons.Default.Delete, "Remove", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Icon(Icons.Default.Delete, stringResource(R.string.remove), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }

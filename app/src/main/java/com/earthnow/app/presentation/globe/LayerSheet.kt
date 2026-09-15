@@ -1,7 +1,6 @@
 package com.earthnow.app.presentation.globe
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,10 +24,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.earthnow.app.R
 import com.earthnow.app.domain.model.LayerType
-import com.earthnow.app.util.TimeFormat
+import com.earthnow.app.presentation.localization.layerTitle
+import com.earthnow.app.presentation.localization.relativeTime
 
 @Composable
 fun LayerSheet(
@@ -53,17 +55,21 @@ fun LayerSheet(
             DismissBar()
             Spacer(Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Layers", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(
+                    stringResource(R.string.layers_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
                 Spacer(Modifier.weight(1f))
                 IconButton(
                     onClick = onClose,
                     modifier = Modifier.size(44.dp)
-                ) { Icon(Icons.Default.Close, "Close layers panel") }
+                ) { Icon(Icons.Default.Close, stringResource(R.string.close_layers_panel)) }
             }
             Spacer(Modifier.height(6.dp))
 
             Text(
-                "Tap to toggle live data layers on the globe.",
+                stringResource(R.string.layers_hint),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -77,11 +83,15 @@ fun LayerSheet(
                         .padding(vertical = 7.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("${layer.emoji}  ${layer.title}", Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        "${layer.emoji}  ${layerTitle(layer)}",
+                        Modifier.weight(1f),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                     Column(horizontalAlignment = Alignment.End) {
                         layerUpdatedAt[layer]?.let {
                             Text(
-                                "Updated ${TimeFormat.ago(it)}",
+                                stringResource(R.string.updated_ago, relativeTime(it)),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -106,7 +116,7 @@ fun LayerSheet(
                     color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.6f)
                 ) {
                     Text(
-                        "Performance note: ${rasterCount} raster layers are active. Recommended combos: Temperature + Wind + Clouds, or Earthquakes + Volcanoes.",
+                        stringResource(R.string.performance_note, rasterCount),
                         Modifier.padding(12.dp),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onTertiaryContainer

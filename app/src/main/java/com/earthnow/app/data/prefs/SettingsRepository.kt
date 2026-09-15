@@ -24,6 +24,7 @@ class SettingsRepository @Inject constructor(
 
     private object Keys {
         val THEME = stringPreferencesKey("theme")
+        val LANGUAGE = stringPreferencesKey("language")
         val MAP_STYLE = stringPreferencesKey("map_style")
         val DEFAULT_LAYERS = stringSetPreferencesKey("default_layers")
         val TEMP_UNIT = stringPreferencesKey("temp_unit")
@@ -51,6 +52,7 @@ class SettingsRepository @Inject constructor(
     val settings: Flow<UserSettings> = dataStore.data.map { p ->
         UserSettings(
             themeMode = p[Keys.THEME] ?: "dark",
+            languageMode = p[Keys.LANGUAGE] ?: "system",
             mapStyle = p[Keys.MAP_STYLE] ?: "space",
             defaultLayers = p[Keys.DEFAULT_LAYERS] ?: emptySet(),
             tempUnit = p[Keys.TEMP_UNIT]?.let { runCatching { Units.TempUnit.valueOf(it) }.getOrNull() }
@@ -80,6 +82,7 @@ class SettingsRepository @Inject constructor(
     }
 
     suspend fun setTheme(mode: String) = dataStore.edit { it[Keys.THEME] = mode }
+    suspend fun setLanguage(mode: String) = dataStore.edit { it[Keys.LANGUAGE] = mode }
     suspend fun setMapStyle(style: String) = dataStore.edit { it[Keys.MAP_STYLE] = style }
     suspend fun setDefaultLayers(layers: Set<String>) = dataStore.edit { it[Keys.DEFAULT_LAYERS] = layers }
     suspend fun setTempUnit(unit: Units.TempUnit) = dataStore.edit { it[Keys.TEMP_UNIT] = unit.name }

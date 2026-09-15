@@ -84,6 +84,16 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideNominatimApi(okHttp: OkHttpClient, moshi: Moshi): com.earthnow.app.data.api.NominatimApi =
+        Retrofit.Builder()
+            .baseUrl("https://nominatim.openstreetmap.org/")
+            .client(okHttp)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(com.earthnow.app.data.api.NominatimApi::class.java)
+
+    @Provides
+    @Singleton
     fun provideUsgsApi(okHttp: OkHttpClient, moshi: Moshi): UsgsApi =
         Retrofit.Builder()
             .baseUrl("https://earthquake.usgs.gov/")

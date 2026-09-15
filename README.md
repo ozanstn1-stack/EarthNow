@@ -96,6 +96,7 @@ APK, `app/build/outputs/apk/debug/app-debug.apk` konumuna üretilir (~20 MB).
 | 🌌 Aurora / uzay havası | **NOAA SWPC** — `https://services.swpc.noaa.gov/json/planetary_k_index_1m.json` + `ovation_aurora_latest.json` | ✅ (public domain) | Hayır |
 | 🔍 Arama (şehir/ülke) | **Open-Meteo Geocoding** — `https://geocoding-api.open-meteo.com/v1/search` + Natural Earth ülke GeoJSON'u (gömülü) | ✅ | Hayır |
 | 🤖 AI özeti | **OpenAI uyumlu** (Chat Completions) **veya Gemini** — kullanıcı anahtarıyla | — | **Evet** |
+| 📍 Şehir adı (ters geokodlama) | **OpenStreetMap Nominatim** — `https://nominatim.openstreetmap.org/reverse` (24 saat cache) | ✅ (hafif kullanım + UA) | Hayır |
 | 🗺️ Baz haritalar | OpenFreeMap (varsayılan), Esri World Imagery (uydu), OpenStreetMap (sokak) | ✅ (atıf şart) | Hayır |
 
 > 🔍 **Not:** FIRMS dışındaki tüm veri kaynakları **hiçbir API key gerektirmez**; uygulama anahtarsız tam çalışır (yangın katmanı "Data unavailable" gösterir).
@@ -281,6 +282,8 @@ Release yapılandırması: R8/ProGuard açık (`proguard-rules.pro`), kaynak kü
 - [x] Katmanlar: 🌡️ sıcaklık, 🌧️ yağış radarı, ☁️ bulut, 🌬️ rüzgâr animasyonu, 🌊 deniz sıcaklığı, 🔥 yangın (FIRMS), 🌍 deprem (USGS), 🌋 volkan (GVP), 🌌 aurora (NOAA), ☀️/🌙 gündüz-gece
 - [x] Zaman çizelgesi: radar geçmiş + nowcast; hava modellerinde -6h / NOW / +6h
 - [x] Arama (şehir/ülke/volkan/okyanus), son aramalar
+- [x] Dokunulan noktanın **şehir adı** (Nominatim) ve **10 günlük tahmin**
+- [x] **Türkçe / İngilizce** dil desteği (uygulama içi dil seçici, kalıcı; AI yanıtları da uygulama dilinde)
 - [x] Nokta seçimi → bottom sheet → "What's happening here?" (AI veya şablon)
 - [x] "Ask AI" sohbeti (güvenlik kurallı)
 - [x] Detay ekranı (saatlik tahmin, güneş/ay, olay akışı, paylaşım)

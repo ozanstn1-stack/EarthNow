@@ -26,7 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.earthnow.app.R
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.earthnow.app.presentation.globe.GlobeViewModel
 
@@ -41,9 +43,9 @@ fun WatchScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Region watch", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.watch_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") }
+                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back)) }
                 }
             )
         }
@@ -56,7 +58,7 @@ fun WatchScreen(
             )
             Spacer(Modifier.width(0.dp))
             if (ui.watches.isEmpty()) {
-                Text("No watched regions. Tap \"Watch region\" in a location sheet to add one.",
+                Text(stringResource(R.string.no_watches),
                     Modifier.padding(top = 24.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
                 LazyColumn(Modifier.padding(top = 8.dp)) {
@@ -70,16 +72,19 @@ fun WatchScreen(
                             Column(Modifier.weight(1f)) {
                                 Text(w.name, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
                                 Text(
-                                    "Earthquakes M≥${w.earthquakeMinMag ?: "off"}" +
-                                        " · Fires ${if (w.notifyWildfire) "on" else "off"}" +
-                                        " · Volcano ${if (w.notifyVolcano) "on" else "off"}" +
-                                        " · Aurora ${if (w.notifyAurora) "on" else "off"}",
+                                    stringResource(
+                                        R.string.watch_line,
+                                        w.earthquakeMinMag?.toString() ?: stringResource(R.string.off),
+                                        if (w.notifyWildfire) stringResource(R.string.on) else stringResource(R.string.off),
+                                        if (w.notifyVolcano) stringResource(R.string.on) else stringResource(R.string.off),
+                                        if (w.notifyAurora) stringResource(R.string.on) else stringResource(R.string.off)
+                                    ),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                             IconButton(onClick = { viewModel.removeWatch(w.id) }) {
-                                Icon(Icons.Default.Delete, "Remove", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Icon(Icons.Default.Delete, stringResource(R.string.remove), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                     }
