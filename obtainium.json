@@ -3,7 +3,7 @@
   "label": "Earth Now",
   "package": "com.earthnow.app",
   "url": "https://github.com/ozanstn1-stack/EarthNow",
-  "version": "v1.0.4",
+  "version": "v1.0.5",
   "installMethod": "ghrelease",
   "preferredLink": "app-debug.apk",
   "autoApkFilterByArch": false,
