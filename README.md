@@ -114,11 +114,17 @@ sdk.dir=C\:\\Users\\<kullanici>\\AppData\\Local\\Android\\Sdk
 # NASA FIRMS (ücretsiz kayıt: https://firms.modaps.eosdis.nasa.gov/api/area )
 FIRMS_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-# AI — ikisinden birini kullanın
-AI_OPENAI_API_KEY=sk-...                    # OpenAI veya uyumlu sağlayıcı
-AI_BASE_URL=https://api.openai.com          # İsteğe bağlı: herhangi bir OpenAI-uyumlu uç
-AI_GEMINI_API_KEY=AIza...                   # https://aistudio.google.com/apikey
+# AI — en az birini yapılandırın:
+# DeepSeek (önerilen: en düşük maliyet, OpenAI uyumlu; base URL otomatik ayarlanır)
+AI_DEEPSEEK_API_KEY=sk-...
+# OpenAI veya herhangi bir OpenAI-uyumlu uç
+AI_OPENAI_API_KEY=sk-...
+AI_BASE_URL=https://api.openai.com
+# Google Gemini (ücretsiz kota: https://aistudio.google.com/apikey)
+AI_GEMINI_API_KEY=AIza...
 ```
+
+Ayarlar > AI sağlayıcısı bölümünden **Otomatik / OpenAI uyumlu / Gemini / DeepSeek / Yerel şablon** seçilebilir. Otomatik mod, yapılandırılmış sağlayıcılar arasından önce DeepSeek (en ekonomik), sonra OpenAI uyumlu uç, ardından Gemini dener; hiç anahtar yoksa gerçek verilerden üretilen yerel şablona düşer — uygulama asla AI olmadan çalışamaz duruma gelmez.
 
 Environment variable alternatifi: `FIRMS_API_KEY=... ./gradlew assembleDebug` (aynı adlar).
 

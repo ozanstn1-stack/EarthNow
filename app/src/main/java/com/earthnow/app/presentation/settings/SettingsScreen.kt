@@ -149,6 +149,7 @@ fun SettingsScreen(
                         "auto" to stringResource(R.string.ai_auto),
                         "openai" to stringResource(R.string.ai_openai),
                         "gemini" to stringResource(R.string.ai_gemini),
+                        "deepseek" to stringResource(R.string.ai_deepseek),
                         "template" to stringResource(R.string.ai_template)
                     ),
                     s.aiProvider

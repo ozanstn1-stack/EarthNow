@@ -14,7 +14,7 @@ import javax.inject.Singleton
 
 @Singleton
 class OpenAiProvider @Inject constructor(
-    private val api: OpenAiApi
+    @javax.inject.Named("openai") private val api: OpenAiApi
 ) : AiSummaryProvider {
     override val id = "openai"
     override val displayName = "OpenAI-compatible API"
@@ -46,6 +46,46 @@ class OpenAiProvider @Inject constructor(
         )
         resp.error?.message?.let { throw IllegalStateException("AI API error: $it") }
         return resp.choices.firstOrNull()?.message?.content ?: throw IllegalStateException("Empty AI response")
+    }
+}
+
+@Singleton
+class DeepSeekProvider @Inject constructor(
+    @javax.inject.Named("deepseek") private val api: OpenAiApi
+) : AiSummaryProvider {
+    override val id = "deepseek"
+    override val displayName = "DeepSeek"
+
+    private val model = System.getenv("AI_DEEPSEEK_MODEL") ?: "deepseek-chat"
+
+    override suspend fun summarize(
+        context: LocationContext,
+        tempUnit: com.earthnow.app.util.Units.TempUnit,
+        windUnit: com.earthnow.app.util.Units.WindUnit,
+        language: String
+    ): String {
+        val payload = AiPromptBuilder.summaryPayload(context, tempUnit, windUnit, language)
+        return chat(AiPromptBuilder.summarySystemPrompt(language), payload)
+    }
+
+    override suspend fun askQuestion(question: String, dataContext: String, language: String): String =
+        chat(AiPromptBuilder.questionSystemPrompt(language), AiPromptBuilder.questionPayload(question, dataContext))
+
+    private suspend fun chat(system: String, user: String): String {
+        if (com.earthnow.app.BuildConfig.AI_DEEPSEEK_API_KEY.isBlank()) {
+            throw IllegalStateException("DeepSeek API key not configured")
+        }
+        val resp = api.chat(
+            ChatCompletionRequest(
+                model = model,
+                messages = listOf(
+                    ChatMessageDto("system", system),
+                    ChatMessageDto("user", user)
+                )
+            )
+        )
+        resp.error?.message?.let { throw IllegalStateException("DeepSeek API error: $it") }
+        return resp.choices.firstOrNull()?.message?.content ?: throw IllegalStateException("Empty DeepSeek response")
     }
 }
 

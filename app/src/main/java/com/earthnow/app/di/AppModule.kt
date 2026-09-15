@@ -134,6 +134,7 @@ object AppModule {
 
     @Provides
     @Singleton
+    @javax.inject.Named("openai")
     fun provideOpenAiApi(okHttp: OkHttpClient, moshi: Moshi): OpenAiApi {
         val baseUrl = BuildConfig.AI_BASE_URL.ifBlank { "https://api.openai.com" }
         return Retrofit.Builder()
@@ -159,6 +160,24 @@ object AppModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create(GeminiApi::class.java)
+
+    /** DeepSeek is OpenAI-compatible; reuse [OpenAiApi] with its own base URL and key. */
+    @Provides
+    @Singleton
+    @javax.inject.Named("deepseek")
+    fun provideDeepSeekApi(okHttp: OkHttpClient, moshi: Moshi): OpenAiApi =
+        Retrofit.Builder()
+            .baseUrl("https://api.deepseek.com/")
+            .client(okHttp.newBuilder().addInterceptor { chain ->
+                val req = chain.request().newBuilder()
+                if (BuildConfig.AI_DEEPSEEK_API_KEY.isNotBlank()) {
+                    req.header("Authorization", "Bearer ${BuildConfig.AI_DEEPSEEK_API_KEY}")
+                }
+                chain.proceed(req.build())
+            }.build())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(OpenAiApi::class.java)
 
     @Provides
     @Singleton

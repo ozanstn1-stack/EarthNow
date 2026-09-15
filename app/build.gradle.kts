@@ -26,14 +26,15 @@ android {
         applicationId = "com.earthnow.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 4
-        versionName = "1.0.3"
+        versionCode = 5
+        versionName = "1.0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "FIRMS_API_KEY", "\"${localOrEnv("FIRMS_API_KEY").replace("\"", "\\\"")}\"")
         buildConfigField("String", "AI_OPENAI_API_KEY", "\"${localOrEnv("AI_OPENAI_API_KEY").replace("\"", "\\\"")}\"")
         buildConfigField("String", "AI_GEMINI_API_KEY", "\"${localOrEnv("AI_GEMINI_API_KEY").replace("\"", "\\\"")}\"")
+        buildConfigField("String", "AI_DEEPSEEK_API_KEY", "\"${localOrEnv("AI_DEEPSEEK_API_KEY").replace("\"", "\\\"")}\"")
         buildConfigField("String", "AI_BASE_URL", "\"${localOrEnv("AI_BASE_URL").ifBlank { "https://api.openai.com" }.replace("\"", "\\\"")}\"")
     }
 

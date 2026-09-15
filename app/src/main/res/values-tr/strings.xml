@@ -161,6 +161,7 @@
     <string name="ai_auto">Otomatik (ilk yapılandırılan)</string>
     <string name="ai_openai">OpenAI uyumlu</string>
     <string name="ai_gemini">Gemini</string>
+    <string name="ai_deepseek">DeepSeek</string>
     <string name="ai_template">Yerel şablon (anahtarsız)</string>
     <string name="settings_notifications">Bildirimler</string>
     <string name="settings_notif_enable">Bildirimleri etkinleştir</string>
@@ -178,7 +179,7 @@
     <string name="settings_live_note_sub">Tek seferlik not olarak gösterilir</string>
     <string name="settings_clear_cache">Arama geçmişini ve önbelleği temizle</string>
     <string name="settings_about">Hakkında</string>
-    <string name="settings_about_text">Earth Now v1.0.2 — canlı Dünya keşfi.\nVeri kaynakları: Open-Meteo, USGS, NOAA SWPC, NASA FIRMS, RainViewer, Smithsonian GVP, Natural Earth.\nBaz haritalar: © OpenFreeMap, © OpenStreetMap katkıcıları, Sentinel-2 cloudless © EOX.</string>
+    <string name="settings_about_text">Earth Now v1.0.4 — canlı Dünya keşfi.\nVeri kaynakları: Open-Meteo, USGS, NOAA SWPC, NASA FIRMS, RainViewer, Smithsonian GVP, Natural Earth.\nBaz haritalar: © OpenFreeMap, © OpenStreetMap katkıcıları, Sentinel-2 cloudless © EOX.</string>
 
     <!-- Favorites -->
     <string name="favorites_title">Favoriler</string>

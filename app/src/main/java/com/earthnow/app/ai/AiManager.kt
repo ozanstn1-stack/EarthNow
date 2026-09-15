@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.first
 @Singleton
 class AiManager @Inject constructor(
     private val openAiProvider: OpenAiProvider,
+    private val deepSeekProvider: DeepSeekProvider,
     private val geminiProvider: GeminiProvider,
     private val templateProvider: TemplateSummaryProvider,
     private val settingsRepository: SettingsRepository,
@@ -48,6 +49,7 @@ class AiManager @Inject constructor(
             when (chosen) {
                 "template" -> AiResult(templateProvider.summarize(context, tempUnit, windUnit, lang), templateProvider.displayName, true)
                 "gemini" -> AiResult(geminiProvider.summarize(context, tempUnit, windUnit, lang), geminiProvider.displayName, false)
+                "deepseek" -> AiResult(deepSeekProvider.summarize(context, tempUnit, windUnit, lang), deepSeekProvider.displayName, false)
                 else -> AiResult(openAiProvider.summarize(context, tempUnit, windUnit, lang), openAiProvider.displayName, false)
             }
         } catch (e: Exception) {
@@ -67,6 +69,7 @@ class AiManager @Inject constructor(
             when (chosen) {
                 "template" -> AiResult(templateProvider.askQuestion(question, dataContext, lang), templateProvider.displayName, true)
                 "gemini" -> AiResult(geminiProvider.askQuestion(question, dataContext, lang), geminiProvider.displayName, false)
+                "deepseek" -> AiResult(deepSeekProvider.askQuestion(question, dataContext, lang), deepSeekProvider.displayName, false)
                 else -> AiResult(openAiProvider.askQuestion(question, dataContext, lang), openAiProvider.displayName, false)
             }
         } catch (e: Exception) {
@@ -80,6 +83,9 @@ class AiManager @Inject constructor(
 
     fun availableProviders(): List<Pair<String, String>> {
         val list = mutableListOf<Pair<String, String>>()
+        if (BuildConfig.AI_DEEPSEEK_API_KEY.isNotBlank()) {
+            list += deepSeekProvider.id to deepSeekProvider.displayName
+        }
         if (BuildConfig.AI_OPENAI_API_KEY.isNotBlank() || BuildConfig.AI_BASE_URL.isNotBlank()) {
             list += openAiProvider.id to openAiProvider.displayName
         }
@@ -91,13 +97,17 @@ class AiManager @Inject constructor(
     }
 
     private suspend fun pickProvider(pref: String): String = when (pref) {
-        "openai" -> "openai"
-        "gemini" -> "gemini"
+        "openai" -> if (BuildConfig.AI_OPENAI_API_KEY.isNotBlank()) "openai" else "template"
+        "gemini" -> if (BuildConfig.AI_GEMINI_API_KEY.isNotBlank()) "gemini" else "template"
+        "deepseek" -> if (BuildConfig.AI_DEEPSEEK_API_KEY.isNotBlank()) "deepseek" else "template"
         "template" -> "template"
         else -> {
+            // Auto: prefer the cheapest configured provider, fall back to
+            // the local template so the feature never fails silently.
             when {
-                BuildConfig.AI_GEMINI_API_KEY.isNotBlank() && BuildConfig.AI_OPENAI_API_KEY.isBlank() -> "gemini"
+                BuildConfig.AI_DEEPSEEK_API_KEY.isNotBlank() -> "deepseek"
                 BuildConfig.AI_OPENAI_API_KEY.isNotBlank() -> "openai"
+                BuildConfig.AI_GEMINI_API_KEY.isNotBlank() -> "gemini"
                 else -> "template"
             }
         }

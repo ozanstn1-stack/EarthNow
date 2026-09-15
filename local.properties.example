@@ -10,7 +10,9 @@ sdk.dir=C\:\\Users\\<KULLANICI>\\AppData\\Local\\Android\\Sdk
 FIRMS_API_KEY=
 #
 # AI providers - configure at least one, or leave empty to use the local
-# real-data template fallback (no AI).
+# real-data template fallback (no AI). DeepSeek is the cheapest option and
+# is OpenAI-compatible; it needs no base URL (auto-configured).
+AI_DEEPSEEK_API_KEY=
 AI_OPENAI_API_KEY=
 AI_BASE_URL=https://api.openai.com
 AI_GEMINI_API_KEY=

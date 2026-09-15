@@ -161,6 +161,7 @@
     <string name="ai_auto">Auto (first configured)</string>
     <string name="ai_openai">OpenAI-compatible</string>
     <string name="ai_gemini">Gemini</string>
+    <string name="ai_deepseek">DeepSeek</string>
     <string name="ai_template">Local template (no key)</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_notif_enable">Enable notifications</string>
@@ -178,7 +179,7 @@
     <string name="settings_live_note_sub">Shown as a one-time note — keep enabled</string>
     <string name="settings_clear_cache">Clear search history &amp; cache</string>
     <string name="settings_about">About</string>
-    <string name="settings_about_text">Earth Now v1.0.2 — live Earth explorer.\nData sources: Open-Meteo, USGS, NOAA SWPC, NASA FIRMS, RainViewer, Smithsonian GVP, Natural Earth.\nBasemaps: © OpenFreeMap, © OpenStreetMap contributors, Sentinel-2 cloudless © EOX.</string>
+    <string name="settings_about_text">Earth Now v1.0.4 — live Earth explorer.\nData sources: Open-Meteo, USGS, NOAA SWPC, NASA FIRMS, RainViewer, Smithsonian GVP, Natural Earth.\nBasemaps: © OpenFreeMap, © OpenStreetMap contributors, Sentinel-2 cloudless © EOX.</string>
 
     <!-- Favorites -->
     <string name="favorites_title">Favorites</string>
