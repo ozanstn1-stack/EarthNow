@@ -7,9 +7,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
@@ -39,26 +43,38 @@ fun LayerSheet(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
     ) {
-        Column(Modifier.padding(16.dp)) {
+        Column(
+            Modifier
+                .padding(horizontal = 16.dp)
+                .padding(top = 10.dp, bottom = 20.dp)
+                .heightIn(max = 560.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            DismissBar()
+            Spacer(Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Layers", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.weight(1f))
-                IconButton(onClick = onClose) { Icon(Icons.Default.Close, "Close") }
+                IconButton(
+                    onClick = onClose,
+                    modifier = Modifier.size(44.dp)
+                ) { Icon(Icons.Default.Close, "Close layers panel") }
             }
+            Spacer(Modifier.height(6.dp))
 
             Text(
                 "Tap to toggle live data layers on the globe.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(6.dp))
 
             LayerType.entries.forEach { layer ->
                 Row(
                     Modifier
                         .fillMaxWidth()
                         .clickable { onToggle(layer) }
-                        .padding(vertical = 8.dp),
+                        .padding(vertical = 7.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("${layer.emoji}  ${layer.title}", Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
@@ -84,7 +100,7 @@ fun LayerSheet(
             }
 
             if (rasterCount > 2) {
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(10.dp))
                 Surface(
                     shape = RoundedCornerShape(14.dp),
                     color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.6f)

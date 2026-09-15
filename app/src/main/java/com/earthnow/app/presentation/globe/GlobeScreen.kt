@@ -299,29 +299,33 @@ fun GlobeScreen(
 
         // ---- Search sheet ----
         if (showSearch) {
-            SearchSheet(
-                recent = ui.recentSearches,
-                results = ui.searchResults,
-                loading = ui.searchLoading,
-                onQueryChange = { q -> viewModel.searchPlaces(q) },
-                onSelect = { place ->
-                    showSearch = false
-                    viewModel.selectPlace(place)
-                },
-                onClearHistory = { viewModel.clearSearchHistory() },
-                onClose = { showSearch = false; viewModel.clearSearch() }
-            )
+            SheetOverlay(onDismiss = { showSearch = false; viewModel.clearSearch() }) {
+                SearchSheet(
+                    recent = ui.recentSearches,
+                    results = ui.searchResults,
+                    loading = ui.searchLoading,
+                    onQueryChange = { q -> viewModel.searchPlaces(q) },
+                    onSelect = { place ->
+                        showSearch = false
+                        viewModel.selectPlace(place)
+                    },
+                    onClearHistory = { viewModel.clearSearchHistory() },
+                    onClose = { showSearch = false; viewModel.clearSearch() }
+                )
+            }
         }
 
         // ---- Layers sheet ----
         if (showLayers) {
-            LayerSheet(
-                enabled = ui.enabledLayers,
-                layerErrors = ui.layerErrors,
-                layerUpdatedAt = ui.layerUpdatedAt,
-                onToggle = { viewModel.toggleLayer(it) },
-                onClose = { showLayers = false }
-            )
+            SheetOverlay(onDismiss = { showLayers = false }) {
+                LayerSheet(
+                    enabled = ui.enabledLayers,
+                    layerErrors = ui.layerErrors,
+                    layerUpdatedAt = ui.layerUpdatedAt,
+                    onToggle = { viewModel.toggleLayer(it) },
+                    onClose = { showLayers = false }
+                )
+            }
         }
 
         if (!ui.online && !ui.liveBatteryWarningShown) {

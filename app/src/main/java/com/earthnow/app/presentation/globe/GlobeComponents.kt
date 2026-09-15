@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -136,6 +139,40 @@ fun DismissBar(modifier: Modifier = Modifier) {
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
         )
+    }
+}
+
+/**
+ * Bottom-anchored sheet overlay: dims the area above the sheet and closes
+ * on outside taps. Keeps sheets clear of the status bar and the navigation
+ * bar/IME.
+ */
+@Composable
+fun SheetOverlay(
+    onDismiss: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Column(Modifier.fillMaxSize()) {
+        Spacer(
+            Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.45f))
+                .clickable(
+                    interactionSource = androidx.compose.runtime.remember {
+                        androidx.compose.foundation.interaction.MutableInteractionSource()
+                    },
+                    indication = null
+                ) { onDismiss() }
+        )
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .imePadding()
+        ) {
+            content()
+        }
     }
 }
 
